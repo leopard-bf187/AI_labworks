@@ -1,0 +1,99 @@
+Start testing: Sep 24 20:55 Восточная Европа (лето)
+----------------------------------------------------------
+1/6 Testing: GameTreeTests
+1/6 Test: GameTreeTests
+Command: "E:/USM/Course3_Sem5/AI/Lab2_/build/GameTreeTests.exe"
+Directory: E:/USM/Course3_Sem5/AI/Lab2_/build
+"GameTreeTests" start time: Sep 24 20:55 Восточная Европа (лето)
+Output:
+----------------------------------------------------------
+GameTreeTests: PASS (structure, node counts, leaf ranges, seed reproducibility)
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"GameTreeTests" end time: Sep 24 20:55 Восточная Европа (лето)
+"GameTreeTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/6 Testing: MinimaxTests
+2/6 Test: MinimaxTests
+Command: "E:/USM/Course3_Sem5/AI/Lab2_/build/MinimaxTests.exe"
+Directory: E:/USM/Course3_Sem5/AI/Lab2_/build
+"MinimaxTests" start time: Sep 24 20:55 Восточная Европа (лето)
+Output:
+----------------------------------------------------------
+MinimaxTests: PASS (small tree, independent bottom-up reference, multiple seeds, variant 6)
+<end of output>
+Test time =   0.11 sec
+----------------------------------------------------------
+Test Passed.
+"MinimaxTests" end time: Sep 24 20:55 Восточная Европа (лето)
+"MinimaxTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/6 Testing: AlphaBetaTests
+3/6 Test: AlphaBetaTests
+Command: "E:/USM/Course3_Sem5/AI/Lab2_/build/AlphaBetaTests.exe"
+Directory: E:/USM/Course3_Sem5/AI/Lab2_/build
+"AlphaBetaTests" start time: Sep 24 20:55 Восточная Европа (лето)
+Output:
+----------------------------------------------------------
+AlphaBetaTests: PASS (same result as Minimax, valid pruning counters, multiple depths/widths/seeds, variant 6)
+<end of output>
+Test time =   0.21 sec
+----------------------------------------------------------
+Test Passed.
+"AlphaBetaTests" end time: Sep 24 20:55 Восточная Европа (лето)
+"AlphaBetaTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/6 Testing: TraversalTests
+4/6 Test: TraversalTests
+Command: "E:/USM/Course3_Sem5/AI/Lab2_/build/TraversalTests.exe"
+Directory: E:/USM/Course3_Sem5/AI/Lab2_/build
+"TraversalTests" start time: Sep 24 20:55 Восточная Европа (лето)
+Output:
+----------------------------------------------------------
+TraversalTests: PASS (same values, differing traversal statistics, unchanged tree)
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"TraversalTests" end time: Sep 24 20:55 Восточная Европа (лето)
+"TraversalTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/6 Testing: VerificationTests
+5/6 Test: VerificationTests
+Command: "E:/USM/Course3_Sem5/AI/Lab2_/build/VerificationTests.exe"
+Directory: E:/USM/Course3_Sem5/AI/Lab2_/build
+"VerificationTests" start time: Sep 24 20:55 Восточная Европа (лето)
+Output:
+----------------------------------------------------------
+VerificationTests: PASS (26636 trees; known, exhaustive, randomized, both traversal orders)
+<end of output>
+Test time =   0.10 sec
+----------------------------------------------------------
+Test Passed.
+"VerificationTests" end time: Sep 24 20:55 Восточная Европа (лето)
+"VerificationTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/6 Testing: BenchmarkTests
+6/6 Test: BenchmarkTests
+Command: "E:/USM/Course3_Sem5/AI/Lab2_/build/BenchmarkTests.exe"
+Directory: E:/USM/Course3_Sem5/AI/Lab2_/build
+"BenchmarkTests" start time: Sep 24 20:55 Восточная Европа (лето)
+Output:
+----------------------------------------------------------
+BenchmarkTests: PASS (consistent results, nonnegative timings, invalid parameter)
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"BenchmarkTests" end time: Sep 24 20:55 Восточная Европа (лето)
+"BenchmarkTests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Sep 24 20:55 Восточная Европа (лето)

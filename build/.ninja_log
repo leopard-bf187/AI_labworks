@@ -1,0 +1,23 @@
+# ninja log v7
+17	1325	8119757522005254	CMakeFiles/Minimax.dir/src/Minimax.cpp.obj	42f8146b546134b4
+21	1339	8119757522042550	CMakeFiles/AlphaBeta.dir/src/AlphaBeta.cpp.obj	978a797370944bd
+12	1356	8119757521973503	CMakeFiles/GameTree.dir/src/GameTree.cpp.obj	7872bf536beeb33c
+55	1975	8119757522389666	CMakeFiles/BenchmarkTests.dir/tests/BenchmarkTests.cpp.obj	ce4d1e583384844f
+33	2001	8119757522164665	CMakeFiles/GameTreeTests.dir/tests/GameTreeTests.cpp.obj	45f84d738624275c
+42	2004	8119757522256514	CMakeFiles/AlphaBetaTests.dir/tests/AlphaBetaTests.cpp.obj	be0b7c0ece32c2c3
+37	2004	8119757522212513	CMakeFiles/MinimaxTests.dir/tests/MinimaxTests.cpp.obj	933c3e454b5f62dd
+46	2005	8119757522302474	CMakeFiles/TraversalTests.dir/tests/TraversalTests.cpp.obj	dc085dee12e133cb
+1356	2087	8119757535401013	GameTree.lib	50b78821b76e24f2
+2087	2154	8119757542706806	Minimax.lib	57258500b74eea3a
+51	2162	8119757522343902	CMakeFiles/VerificationTests.dir/tests/VerificationTests.cpp.obj	e5310d552618b6c4
+2093	2162	8119757542766687	AlphaBeta.lib	e4beacae5f14550f
+28	2186	8119757522118166	CMakeFiles/AILab2.dir/src/main.cpp.obj	be5b947da60c807f
+24	2301	8119757522077543	CMakeFiles/Benchmark.dir/src/Benchmark.cpp.obj	f16b3396f7630366
+2301	2356	8119757544856294	Benchmark.lib	664466ead686e32b
+2171	2393	8119757543493576	TraversalTests.exe	382c4cd6511941cc
+2154	2393	8119757543383294	MinimaxTests.exe	de639f48f7fa77cc
+2101	2394	8119757542850396	GameTreeTests.exe	3e294acf3fa4b930
+2179	2394	8119757543590963	VerificationTests.exe	5996b905b74ebe0e
+2162	2395	8119757543465068	AlphaBetaTests.exe	6607221294dde361
+2356	2431	8119757545407435	AILab2.exe	d54fd16370333fa4
+2362	2438	8119757545462359	BenchmarkTests.exe	256f0d3a1c01eadf
