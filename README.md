@@ -18,7 +18,7 @@ __Дата завершения:__ 10.09.2026
 ```bash
 git clone --single-branch -b Lab2 https://github.com/leopard-bf187/AI_labworks.git
 ```
-__Дата завершения:__ DD.MM.2026
+__Дата завершения:__ 24.09.2026
 
 <!--
  ---
