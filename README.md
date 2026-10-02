@@ -1,8 +1,8 @@
 # Лабораторные работы по AI
 
 __Студент:__  *Пармакли Леонид IA2404ru*  
-__Преподаватель лабораторных работ:__  *Виорел Григорча*  
-__Преподаватель курса:__  *Елизавета Третьякова*  
+__Проверяющий лабораторных работ:__  *Елизавета Третьякова (asist. univ)*  
+__Преподаватель курса:__  *Виорел Григорча*  
 
 ---
 
@@ -20,14 +20,16 @@ git clone --single-branch -b Lab2 https://github.com/leopard-bf187/AI_labworks.g
 ```
 __Дата завершения:__ 24.09.2026
 
-<!--
+
  ---
 
-[Лабораторная работа №3: Управляющие конструкции](https://github.com/leopard-bf187/PHP_labworks/tree/Lab3)
+[Лабораторная работа №3: Моделирование коллективного поведения агентов](https://github.com/leopard-bf187/AI_labworks/tree/Lab3)
 ```bash
-git clone --single-branch -b Lab3 https://github.com/leopard-bf187/PHP_labworks.git
+git clone --single-branch -b Lab3 https://github.com/leopard-bf187/AI_labworks.git
 ```
-__Дата завершения:__ DD.MM.2026
+__Дата завершения:__ DD.10.2026
+
+<!--
 
 ---
 
