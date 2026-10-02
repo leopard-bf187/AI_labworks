@@ -1,0 +1,8 @@
+/utils/**/*.exe filter=lfs diff=lfs merge=lfs -text
+/utils/**/*.dll filter=lfs diff=lfs merge=lfs -text
+/utils/**/bin/* filter=lfs diff=lfs merge=lfs -text
+
+*.nix text eol=lf
+*.sh text eol=lf
+*.cmake text eol=lf
+CMakeLists.txt text eol=lf

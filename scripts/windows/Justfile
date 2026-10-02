@@ -1,0 +1,30 @@
+set dotenv-load
+
+root := source_directory() + "/../.."
+
+default:
+    @just --justfile "{{ source_directory() }}/Justfile" --list
+
+presets:
+    cd /d "{{ root }}" && cmake --list-presets
+
+[windows]
+build:
+    cd /d "{{ root }}" && cmake --preset vs2022_win64
+    cd /d "{{ root }}" && cmake --build --preset build_vs2022_win64_release
+    cd /d "{{ root }}" && cmake --install projects\vs2022_win64 --config Release
+
+[windows]
+check:
+    cd /d "{{ root }}" && cmake --list-presets
+
+[windows]
+fmt:
+    cd /d "{{ root }}" && powershell -NoProfile -ExecutionPolicy Bypass -Command "$files = git ls-files -- '*.c' '*.cc' '*.cpp' '*.cxx' '*.h' '*.hh' '*.hpp' '*.hxx' ':(exclude)third_party/**' ':(exclude)src_engine/freetype/**' ':(exclude)public/freetype/**'; if ($files) { clang-format -i --style=file --fallback-style=none $files }"
+
+test:
+    cd /d "{{ root }}" && ctest --preset test_vs2022_win64_release
+
+[windows]
+clean:
+    cd /d "{{ root }}" && scripts\windows\clear_cache.bat

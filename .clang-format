@@ -1,0 +1,75 @@
+BasedOnStyle: LLVM
+Language: Cpp
+
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+
+ColumnLimit: 250
+
+BreakBeforeBraces: Allman
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: true
+  BeforeElse: true
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+SpaceBeforeParens: ControlStatements
+SpaceBeforeAssignmentOperators: true
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+SpaceInEmptyParentheses: false
+SpaceAfterCStyleCast: true
+
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: InlineOnly
+AllowShortCaseLabelsOnASingleLine: false
+
+IndentCaseLabels: true
+IndentCaseBlocks: true
+IndentPPDirectives: None
+
+BinPackArguments: false
+BinPackParameters: false
+
+Cpp11BracedListStyle: true
+BreakConstructorInitializers: BeforeColon
+ConstructorInitializerIndentWidth: 4
+
+AlignTrailingComments: true
+AlignOperands: Align
+BreakBeforeBinaryOperators: None
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: true
+AlignConsecutiveMacros: true
+
+EmptyLineBeforeAccessModifier: LogicalBlock
+AccessModifierOffset: -4
+
+NamespaceIndentation: All
+FixNamespaceComments: true
+
+SortIncludes: false
+IncludeBlocks: Preserve
+
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 3
+OneLineFormatOffRegex: ".*typedef.*|.*define.*"
+
+ReflowComments: false
+Standard: c++20

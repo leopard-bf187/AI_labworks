@@ -1,0 +1,58 @@
+namespace krystallic
+{
+	namespace Resource
+	{
+		// Texture API
+		// Mesh API
+		// Sprite API
+		// ParticleFX API
+		// Font Manager API
+		// Asset System API
+	}
+
+
+	namespace Media
+	{
+		// Audio API
+		// AudioFX API
+		// Video API
+		// VideoFX API
+	}
+	
+
+	namespace Render
+	{
+		// Particle System API
+		// Material System API
+		// Render Graph API
+		// Graphics Resource Manager API
+	}
+
+
+	namespace Runtime
+	{
+		// Script System API
+	}
+
+
+	namespace GUI
+	{
+		// GUI System API
+	}
+
+
+	namespace Debug
+	{
+		// Log API
+		// Profiler API
+	}
+
+	namespace Scene
+	{
+		// Prefab System API
+		// Scene Manager API
+	}
+}
+
+
+

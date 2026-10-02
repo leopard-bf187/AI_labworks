@@ -1,0 +1,48 @@
+set dotenv-load
+
+root := source_directory() + "/../.."
+
+default:
+    @just --justfile "{{ source_directory() }}/Justfile" --list
+
+presets:
+    cd "{{ root }}" && cmake --list-presets
+
+build:
+    @cd "{{ root }}" && if command -v nix >/dev/null 2>&1; then \
+        nix build ./scripts/linux; \
+    else \
+        cmake --preset gcc_linux64 && cmake --build --preset build_gcc_linux64; \
+    fi
+
+check:
+    @cd "{{ root }}" && if command -v nix >/dev/null 2>&1; then \
+        nix flake check ./scripts/linux; \
+    else \
+        cmake --list-presets; \
+    fi
+
+fmt:
+    @if command -v nix >/dev/null 2>&1; then \
+        cd "{{ source_directory() }}" && nix fmt; \
+    else \
+        git ls-files -- '*.c' '*.cc' '*.cpp' '*.cxx' '*.h' '*.hh' '*.hpp' '*.hxx' ':(exclude)third_party/**' ':(exclude)src_engine/freetype/**' ':(exclude)public/freetype/**' | xargs -r clang-format -i --style=file --fallback-style=none; \
+    fi
+
+test:
+    @cd "{{ root }}" && if command -v nix >/dev/null 2>&1; then \
+        nix flake check --impure; \
+    else \
+        cmake --preset gcc_linux64 && \
+        cmake --build --preset build_gcc_linux64 && \
+        ctest --test-dir projects/gcc_linux64 --output-on-failure; \
+    fi
+
+rewrite:
+    @cd "{{ root }}" && \
+        cmake --preset gcc_linux64 && \
+        cmake --build --preset build_gcc_linux64 && \
+        DATADRIVEN_REWRITE=1 ./projects/gcc_linux64/src_engine/stdlib/stdlib_tests
+
+clean:
+    cd "{{ root }}" && bash scripts/linux/clear_cache.sh

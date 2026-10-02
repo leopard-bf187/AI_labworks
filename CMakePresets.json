@@ -1,0 +1,543 @@
+{
+    "version": 3,
+
+    "configurePresets": [
+        {
+            "name": "vs2019_win32",
+            "generator": "Visual Studio 16 2019",
+            "binaryDir": "${sourceDir}/projects/vs2019_win32",
+            "architecture": { "value": "Win32" }
+        },
+        {
+            "name": "vs2019_win64",
+            "generator": "Visual Studio 16 2019",
+            "binaryDir": "${sourceDir}/projects/vs2019_win64",
+            "architecture": { "value": "x64" }
+        },
+        {
+            "name": "vs2019_winarm64",
+            "generator": "Visual Studio 16 2019",
+            "binaryDir": "${sourceDir}/projects/vs2019_winarm64",
+            "architecture": { "value": "ARM64" }
+        },
+
+        {
+            "name": "vs2022_win32",
+            "generator": "Visual Studio 17 2022",
+            "binaryDir": "${sourceDir}/projects/vs2022_win32",
+            "architecture": { "value": "Win32" }
+        },
+        {
+            "name": "vs2022_win64",
+            "generator": "Visual Studio 17 2022",
+            "binaryDir": "${sourceDir}/projects/vs2022_win64",
+            "architecture": { "value": "x64" }
+        },
+        {
+            "name": "vs2022_winarm64",
+            "generator": "Visual Studio 17 2022",
+            "binaryDir": "${sourceDir}/projects/vs2022_winarm64",
+            "architecture": { "value": "ARM64" }
+        },
+
+        {
+            "name": "llvm_ninja_win32d",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/llvm_ninja_win32d",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/llvm_msvc16_winsdk17763_win32.cmake",
+            "cacheVariables": { 
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON" 
+            }
+        },
+        {
+            "name": "llvm_ninja_win32",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/llvm_ninja_win32",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/llvm_msvc16_winsdk17763_win32.cmake",
+            "cacheVariables": { 
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON" 
+        }
+        },
+        {
+            "name": "llvm_ninja_win64d",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/llvm_ninja_win64d",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/llvm_msvc16_winsdk17763_win64.cmake",
+            "cacheVariables": { 
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+        {
+            "name": "llvm_ninja_win64",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/llvm_ninja_win64",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/llvm_msvc16_winsdk17763_win64.cmake",
+            "cacheVariables": { 
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+
+        {
+            "name": "llvm_ninja_winarm64d",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/llvm_ninja_winarm64d",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/llvm_msvc16_winsdk17763_arm64.cmake",
+            "cacheVariables": { 
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+        {
+            "name": "llvm_ninja_winarm64",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/llvm_ninja_winarm64",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/llvm_msvc16_winsdk17763_arm64.cmake",
+            "cacheVariables": 
+            { 
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+
+
+        {
+            "name": "gcc_linux64d",
+            "displayName": "GCC Linux64 Debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/gcc_linux64d",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+        },
+        {
+            "name": "gcc_linux64",
+            "displayName": "GCC Linux64 Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/gcc_linux64",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+        },
+        {
+            "name": "llvm_ninja_linux64d",
+            "displayName": "Clang Linux64 Debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/llvm_ninja_linux64d",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "llvm_ninja_linux64",
+            "displayName": "Clang Linux64 Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/llvm_ninja_linux64",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+
+        {
+            "name": "android_arm64d",
+            "displayName": "Android ARM64 Debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/android_arm64d",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/ndk_llvm_arm8.cmake",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "ANDROID_ABI": "arm64-v8a",
+                "ANDROID_PLATFORM": "android-24",
+                "ANDROID_STL": "c++_shared"
+            }
+        },
+        {
+            "name": "android_arm64",
+            "displayName": "Android ARM64 Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/android_arm64",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/ndk_llvm_arm8.cmake",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "ANDROID_ABI": "arm64-v8a",
+                "ANDROID_PLATFORM": "android-24",
+                "ANDROID_STL": "c++_shared"
+            }
+        },
+        {
+            "name": "android_arm7d",
+            "displayName": "Android ARMv7 Debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/android_arm7d",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/ndk_llvm_arm7.cmake",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "ANDROID_ABI": "armeabi-v7a",
+                "ANDROID_PLATFORM": "android-24",
+                "ANDROID_STL": "c++_shared",
+                "ANDROID_ARM_NEON": "TRUE"
+            }
+        },
+        {
+            "name": "android_arm7",
+            "displayName": "Android ARMv7 Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/android_arm7",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/ndk_llvm_arm7.cmake",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "ANDROID_ABI": "armeabi-v7a",
+                "ANDROID_PLATFORM": "android-24",
+                "ANDROID_STL": "c++_shared",
+                "ANDROID_ARM_NEON": "TRUE"
+            }
+        },
+        {
+            "name": "android_x64d",
+            "displayName": "Android x86_64 Debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/android_x64d",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/ndk_llvm_x64.cmake",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "ANDROID_ABI": "x86_64",
+                "ANDROID_PLATFORM": "android-24",
+                "ANDROID_STL": "c++_shared"
+            }
+        },
+        {
+            "name": "android_x64",
+            "displayName": "Android x86_64 Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/android_x64",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/ndk_llvm_x64.cmake",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "ANDROID_ABI": "x86_64",
+                "ANDROID_PLATFORM": "android-24",
+                "ANDROID_STL": "c++_shared"
+            }
+        },
+        {
+            "name": "android_x86d",
+            "displayName": "Android x86 Debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/android_x86d",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/ndk_llvm_x86.cmake",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "ANDROID_ABI": "x86",
+                "ANDROID_PLATFORM": "android-24",
+                "ANDROID_STL": "c++_shared"
+            }
+        },
+        {
+            "name": "android_x86",
+            "displayName": "Android x86 Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/projects/android_x86",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/ndk_llvm_x86.cmake",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "ANDROID_ABI": "x86",
+                "ANDROID_PLATFORM": "android-24",
+                "ANDROID_STL": "c++_shared"
+            }
+        }
+    ],
+
+
+    "buildPresets": 
+    [
+        {
+            "name": "build_vs2019_win32_debug",
+            "configurePreset": "vs2019_win32",
+            "configuration": "Debug"
+        },
+
+        {
+            "name": "build_vs2019_win32_release",
+            "configurePreset": "vs2019_win32",
+            "configuration": "Release"
+        },
+
+        {
+            "name": "build_vs2019_win64_debug",
+            "configurePreset": "vs2019_win64",
+            "configuration": "Debug"
+        },
+
+        {
+            "name": "build_vs2019_win64_release",
+            "configurePreset": "vs2019_win64",
+            "configuration": "Release"
+        },
+
+        {
+            "name": "build_vs2019_winarm64_debug",
+            "configurePreset": "vs2019_winarm64",
+            "configuration": "Debug"
+        },
+
+        {
+            "name": "build_vs2019_winarm64_release",
+            "configurePreset": "vs2019_winarm64",
+            "configuration": "Release"
+        },
+
+        {
+            "name": "build_vs2022_win32_debug",
+            "configurePreset": "vs2022_win32",
+            "configuration": "Debug"
+        },
+
+        {
+            "name": "build_vs2022_win32_release",
+            "configurePreset": "vs2022_win32",
+            "configuration": "Release"
+        },
+
+        {
+            "name": "build_vs2022_win64_debug",
+            "configurePreset": "vs2022_win64",
+            "configuration": "Debug"
+        },
+
+        {
+            "name": "build_vs2022_win64_release",
+            "configurePreset": "vs2022_win64",
+            "configuration": "Release"
+        },
+
+        {
+            "name": "build_vs2022_winarm64_debug",
+            "configurePreset": "vs2022_winarm64",
+            "configuration": "Debug"
+        },
+
+        {
+            "name": "build_vs2022_winarm64_release",
+            "configurePreset": "vs2022_winarm64",
+            "configuration": "Release"
+        },
+
+        {
+            "name": "build_llvm_ninja_win32d",
+            "configurePreset": "llvm_ninja_win32d"
+        },
+
+        {
+            "name": "build_llvm_ninja_win32",
+            "configurePreset": "llvm_ninja_win32"
+        },
+
+        {
+            "name": "build_llvm_ninja_win64d",
+            "configurePreset": "llvm_ninja_win64d"
+        },
+
+        {
+            "name": "build_llvm_ninja_win64",
+            "configurePreset": "llvm_ninja_win64"
+        },
+
+        {
+            "name": "build_llvm_ninja_winarm64d",
+            "configurePreset": "llvm_ninja_winarm64d"
+        },
+
+        {
+            "name": "build_llvm_ninja_winarm64",
+            "configurePreset": "llvm_ninja_winarm64"
+        },
+
+        {
+            "name": "build_gcc_linux64d",
+            "configurePreset": "gcc_linux64d"
+        },
+
+        {
+            "name": "build_gcc_linux64",
+            "configurePreset": "gcc_linux64"
+        },
+
+        {
+            "name": "build_llvm_ninja_linux64d",
+            "configurePreset": "llvm_ninja_linux64d"
+        },
+
+        {
+            "name": "build_llvm_ninja_linux64",
+            "configurePreset": "llvm_ninja_linux64"
+        },
+
+        {
+            "name": "build_android_arm64d",
+            "configurePreset": "android_arm64d"
+        },
+
+        {
+            "name": "build_android_arm64",
+            "configurePreset": "android_arm64"
+        },
+
+        {
+            "name": "build_android_arm7d",
+            "configurePreset": "android_arm7d"
+        },
+
+        {
+            "name": "build_android_arm7",
+            "configurePreset": "android_arm7"
+        },
+
+        {
+            "name": "build_android_x64d",
+            "configurePreset": "android_x64d"
+        },
+
+        {
+            "name": "build_android_x64",
+            "configurePreset": "android_x64"
+        },
+
+        {
+            "name": "build_android_x86d",
+            "configurePreset": "android_x86d"
+        },
+
+        {
+            "name": "build_android_x86",
+            "configurePreset": "android_x86"
+        }
+    ],
+
+
+    "testPresets": [
+        {
+            "name": "test_gcc_linux64d",
+            "configurePreset": "gcc_linux64d",
+            "output": { "outputOnFailure": true }
+        },
+        {
+            "name": "test_gcc_linux64",
+            "configurePreset": "gcc_linux64",
+            "output": { "outputOnFailure": true }
+        },
+        {
+            "name": "test_llvm_ninja_linux64d",
+            "configurePreset": "llvm_ninja_linux64d",
+            "output": { "outputOnFailure": true }
+        },
+        {
+            "name": "test_llvm_ninja_linux64",
+            "configurePreset": "llvm_ninja_linux64",
+            "output": { "outputOnFailure": true }
+        },
+        {
+            "name": "test_vs2022_win32_debug",
+            "configurePreset": "vs2022_win32",
+            "configuration": "Debug",
+            "output": { "outputOnFailure": true },
+            "execution": {
+                "stopOnFailure": false
+            },
+            "environment": {
+                "PATH": "${sourceDir}/__buildData/stdlib_Debug_Win32;${sourceDir}/__buildData/engine_Debug_Win32;$penv{PATH}"
+            }
+        },
+        {
+            "name": "test_vs2022_win32_release",
+            "configurePreset": "vs2022_win32",
+            "configuration": "Release",
+            "output": { "outputOnFailure": true },
+            "execution": {
+                "stopOnFailure": false
+            },
+            "environment": {
+                "PATH": "${sourceDir}/__buildData/stdlib_Release_Win32;${sourceDir}/__buildData/engine_Release_Win32;$penv{PATH}"
+            }
+        },
+        {
+            "name": "test_vs2022_win64_debug",
+            "configurePreset": "vs2022_win64",
+            "configuration": "Debug",
+            "output": { "outputOnFailure": true },
+            "execution": {
+                "stopOnFailure": false
+            },
+            "environment": {
+                "PATH": "${sourceDir}/__buildData/stdlib_Debug_Win64;${sourceDir}/__buildData/engine_Debug_Win64;$penv{PATH}"
+            }
+        },
+        {
+            "name": "test_vs2022_win64_release",
+            "configurePreset": "vs2022_win64",
+            "configuration": "Release",
+            "output": { "outputOnFailure": true },
+            "execution": {
+                "stopOnFailure": false
+            },
+            "environment": {
+                "PATH": "${sourceDir}/__buildData/stdlib_Release_Win64;${sourceDir}/__buildData/engine_Release_Win64;$penv{PATH}"
+            }
+        },
+        {
+            "name": "test_llvm_ninja_win32d",
+            "configurePreset": "llvm_ninja_win32d",
+            "output": { "outputOnFailure": true },
+            "execution": {
+                "stopOnFailure": false
+            },
+            "environment": {
+                "PATH": "${sourceDir}/__buildData/stdlib_Debug_Win32;${sourceDir}/__buildData/engine_Debug_Win32;$penv{PATH}"
+            }
+        },
+        {
+            "name": "test_llvm_ninja_win32",
+            "configurePreset": "llvm_ninja_win32",
+            "output": { "outputOnFailure": true },
+            "execution": {
+                "stopOnFailure": false
+            },
+            "environment": {
+                "PATH": "${sourceDir}/__buildData/stdlib_Release_Win32;${sourceDir}/__buildData/engine_Release_Win32;$penv{PATH}"
+            }
+        },
+        {
+            "name": "test_llvm_ninja_win64d",
+            "configurePreset": "llvm_ninja_win64d",
+            "output": { "outputOnFailure": true },
+            "execution": {
+                "stopOnFailure": false
+            },
+            "environment": {
+                "PATH": "${sourceDir}/__buildData/stdlib_Debug_Win64;${sourceDir}/__buildData/engine_Debug_Win64;$penv{PATH}"
+            }
+        },
+        {
+            "name": "test_llvm_ninja_win64",
+            "configurePreset": "llvm_ninja_win64",
+            "output": { "outputOnFailure": true },
+            "execution": {
+                "stopOnFailure": false
+            },
+            "environment": {
+                "PATH": "${sourceDir}/__buildData/stdlib_Release_Win64;${sourceDir}/__buildData/engine_Release_Win64;$penv{PATH}"
+            }
+        }
+    ]
+}
