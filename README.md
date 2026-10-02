@@ -29,49 +29,29 @@ git clone --single-branch -b Lab3 https://github.com/leopard-bf187/AI_labworks.g
 ```
 __Дата завершения:__ DD.10.2026
 
-<!--
-
 ---
 
-[Лабораторная работа №4: Массивы и Функции](https://github.com/leopard-bf187/PHP_labworks/tree/Lab4)
+[Лабораторная работа №4: Правила Мамдани](https://github.com/leopard-bf187/AI_labworks/tree/Lab4)
 ```bash
-git clone --single-branch -b Lab4 https://github.com/leopard-bf187/PHP_labworks.git
+git clone --single-branch -b Lab4 https://github.com/leopard-bf187/AI_labworks.git
 ```
 __Дата завершения:__ DD.MM.2026
 
 ---
 
-[Лабораторная работа №5: Объектно-ориентированное программирование в PHP](https://github.com/leopard-bf187/PHP_labworks/tree/Lab5)
+[Лабораторная работа №5: Реализация и исследование параметров генетического алгоритма](https://github.com/leopard-bf187/AI_labworks/tree/Lab5)
 ```bash
-git clone --single-branch -b Lab5 https://github.com/leopard-bf187/PHP_labworks.git
+git clone --single-branch -b Lab5 https://github.com/leopard-bf187/AI_labworks.git
 ```
 __Дата завершения:__ DD.MM.2026
 
 ---
 
-[Лабораторная работа №6: ](https://github.com/leopard-bf187/PHP_labworks/tree/Lab6)
+[Лабораторная работа №6: Представление задачи и поиск в пространстве состояний](https://github.com/leopard-bf187/AI_labworks/tree/Lab6)
 ```bash
-git clone --single-branch -b Lab6 https://github.com/leopard-bf187/PHP_labworks.git
+git clone --single-branch -b Lab6 https://github.com/leopard-bf187/AI_labworks.git
 ```
 __Дата завершения:__ DD.MM.2026
 
----
-
-[Индивидуальная работа: Веб-приложение "Дневник настроения"](https://github.com/leopard-bf187/PHP_labworks/tree/IndWork)
-```bash
-git clone --single-branch -b IndWork https://github.com/leopard-bf187/PHP_labworks.git
-```
-__Дата завершения:__ DD.MM.2026 -->
-
-<!--
-
----
-
-[Индивидуальная работа: ](https://github.com/IA204JavaScript/labworks_leopard187/tree/IndWork)
-```bash
-git clone --single-branch -b IndWork https://github.com/leopard-bf187/PHP_labworks.git
-```
-__Дата завершения:__ 22.05.2025
 
 
--->
