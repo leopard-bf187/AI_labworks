@@ -14,6 +14,7 @@
 #include "resource.h"
 
 #include <cstring>
+#include <cstdio>
 
 //--------------------------------------------------------------------------------------
 // Global variables
@@ -339,6 +340,19 @@ bool CALLBACK IsD3D11DeviceAcceptable( const CD3D11EnumAdapterInfo* , UINT , con
 //--------------------------------------------------------------------------------------
 // Create any D3D11 resources that aren't dependant on the back buffer
 //--------------------------------------------------------------------------------------
+// При отказе callback DXUT не вызывает OnD3D11DestroyDevice: освобождаем ресурсы сами.
+// Название неудачного этапа и HRESULT показываем сразу, пока сообщение не скрыто DXUT.
+HRESULT ReportD3D11DeviceCreateFailure( const char* pStage, HRESULT hr, const char* pDetails = NULL )
+{
+    char message[4096];
+    sprintf_s( message, "Failed to initialize GPUBoids (Direct3D 11).\nStage: %s\nHRESULT: 0x%08X\n%.*s", pStage, (unsigned int)hr, 3072, pDetails ? pDetails : "" );
+    OutputDebugStringA( message );
+    MessageBoxA( DXUTGetHWND(), message, "GPUBoids - Initialization Error", MB_OK | MB_ICONERROR );
+    OnD3D11DestroyDevice( NULL );
+    return hr;
+}
+
+
 // [LAB3][BOIDS] Инициализация: загрузка HLSL Effect, получение техник и создание GPU-ресурсов.
 HRESULT CALLBACK OnD3D11CreateDevice( ID3D11Device* pd3dDevice, const DXGI_SURFACE_DESC* , void*  )
 {
@@ -346,13 +360,19 @@ HRESULT CALLBACK OnD3D11CreateDevice( ID3D11Device* pd3dDevice, const DXGI_SURFA
 
     // DXUT11 хранит немедленный контекст отдельно от ID3D11Device.
     ID3D11DeviceContext* pd3dContext = DXUTGetD3D11DeviceContext();
-    V_RETURN( g_DialogResourceManager.OnD3D11CreateDevice( pd3dDevice, pd3dContext ) );
-    V_RETURN( g_D3DSettingsDlg.OnD3D11CreateDevice( pd3dDevice ) );
+    hr = g_DialogResourceManager.OnD3D11CreateDevice( pd3dDevice, pd3dContext );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "DXUT dialog resource initialization", hr );
+    hr = g_D3DSettingsDlg.OnD3D11CreateDevice( pd3dDevice );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "DXUT device settings initialization", hr );
     g_pTxtHelper = new CDXUTTextHelper( pd3dDevice, pd3dContext, &g_DialogResourceManager, 15 );
 
     // Read the D3DX effect file
     WCHAR str[MAX_PATH];
-    V_RETURN( DXUTFindDXSDKMediaFileCch( str, MAX_PATH, L"GPUBoids.fx" ) );
+    hr = DXUTFindDXSDKMediaFileCch( str, MAX_PATH, L"GPUBoids.fx" );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "Locate GPUBoids.fx", hr );
     UINT dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 #if defined( DEBUG ) || defined( _DEBUG )
     dwShaderFlags |= D3DCOMPILE_DEBUG;
@@ -361,13 +381,20 @@ HRESULT CALLBACK OnD3D11CreateDevice( ID3D11Device* pd3dDevice, const DXGI_SURFA
     // [LAB3][BOIDS] Функции поведения Seek/Separation/Alignment/Cohesion/Flee/Avoid находятся в GPUBoids.fx.
     ID3DBlob* pEffectErrors = NULL;
     hr = D3DX11CompileEffectFromFile( str, NULL, NULL, dwShaderFlags, 0, pd3dDevice, &g_pEffect11, &pEffectErrors );
+    if( FAILED( hr ) )
+    {
+        const char* pDetails = pEffectErrors ? (const char*)pEffectErrors->GetBufferPointer() : NULL;
+        if( pDetails )
+            OutputDebugStringA( pDetails );
+        HRESULT result = ReportD3D11DeviceCreateFailure( "Compile GPUBoids.fx (Effects11)", hr, pDetails );
+        SAFE_RELEASE( pEffectErrors );
+        return result;
+    }
     if( pEffectErrors )
     {
-        OutputDebugStringA( ( const char* )pEffectErrors->GetBufferPointer() );
+        OutputDebugStringA( (const char*)pEffectErrors->GetBufferPointer() );
         SAFE_RELEASE( pEffectErrors );
     }
-    if( FAILED( hr ) )
-        return hr;
 
     // Obtain the technique handles
     g_pRenderParticles = g_pEffect11->GetTechniqueByName( "RenderParticles" );
@@ -403,10 +430,14 @@ HRESULT CALLBACK OnD3D11CreateDevice( ID3D11Device* pd3dDevice, const DXGI_SURFA
         { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     };
     D3DX11_PASS_DESC PassDesc;
-    g_pRenderParticles->GetPassByIndex( 0 )->GetDesc( &PassDesc );
-    V_RETURN( pd3dDevice->CreateInputLayout( layout, sizeof( layout ) / sizeof( layout[0] ),
+    hr = g_pRenderParticles->GetPassByIndex( 0 )->GetDesc( &PassDesc );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "Read RenderParticles input signature", hr );
+    hr = pd3dDevice->CreateInputLayout( layout, sizeof( layout ) / sizeof( layout[0] ),
                                              PassDesc.pIAInputSignature,
-                                             PassDesc.IAInputSignatureSize, &g_pParticleVertexLayout ) );
+                                             PassDesc.IAInputSignatureSize, &g_pParticleVertexLayout );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "Create particle input layout", hr );
 
     // Create our splat vertex input layout
     const D3D11_INPUT_ELEMENT_DESC splatlayout[] =
@@ -414,10 +445,14 @@ HRESULT CALLBACK OnD3D11CreateDevice( ID3D11Device* pd3dDevice, const DXGI_SURFA
         { "POS",      0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     };
-    g_pAccumulateForces->GetPassByIndex( 0 )->GetDesc( &PassDesc );
-    V_RETURN( pd3dDevice->CreateInputLayout( splatlayout, sizeof( splatlayout ) / sizeof( splatlayout[0] ),
+    hr = g_pAccumulateForces->GetPassByIndex( 0 )->GetDesc( &PassDesc );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "Read AccumulateForces input signature", hr );
+    hr = pd3dDevice->CreateInputLayout( splatlayout, sizeof( splatlayout ) / sizeof( splatlayout[0] ),
                                              PassDesc.pIAInputSignature,
-                                             PassDesc.IAInputSignatureSize, &g_pSplatVertexLayout ) );
+                                             PassDesc.IAInputSignatureSize, &g_pSplatVertexLayout );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "Create splat input layout", hr );
 
     // Create our mesh vertex input layout
     const D3D11_INPUT_ELEMENT_DESC meshlayout[] =
@@ -426,23 +461,39 @@ HRESULT CALLBACK OnD3D11CreateDevice( ID3D11Device* pd3dDevice, const DXGI_SURFA
         { "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     };
-    g_pRenderBoids->GetPassByIndex( 0 )->GetDesc( &PassDesc );
-    V_RETURN( pd3dDevice->CreateInputLayout( meshlayout, sizeof( meshlayout ) / sizeof( meshlayout[0] ),
+    hr = g_pRenderBoids->GetPassByIndex( 0 )->GetDesc( &PassDesc );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "Read RenderBoids input signature", hr );
+    hr = pd3dDevice->CreateInputLayout( meshlayout, sizeof( meshlayout ) / sizeof( meshlayout[0] ),
                                              PassDesc.pIAInputSignature,
-                                             PassDesc.IAInputSignatureSize, &g_pMeshVertexLayout ) );
+                                             PassDesc.IAInputSignatureSize, &g_pMeshVertexLayout );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "Create boid mesh input layout", hr );
 
     // Create a mesh to avoid
     // [LAB3][BOIDS] Отдельная геометрия: модель boid для instanced drawing и шар для точки Flee().
-    V_RETURN( g_BoidMesh.Create( pd3dDevice, L"GPUBoids\\boid.sdkmesh" ) );
-    V_RETURN( g_FleeMesh.Create( pd3dDevice, L"misc\\ball.sdkmesh" ) );
+    hr = g_BoidMesh.Create( pd3dDevice, L"GPUBoids\\boid.sdkmesh" );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "Load GPUBoids/boid.sdkmesh", hr );
+    hr = g_FleeMesh.Create( pd3dDevice, L"misc\\ball.sdkmesh" );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "Load misc/ball.sdkmesh", hr );
 
     // Create the seeding particle
     // [LAB3][BOIDS] Состояния в texture array, фиктивный vertex buffer, текстура суммарных сил
     // [LAB3][BOIDS] и геометрия splat-квадратов (для способа накопления без geometry shader).
-    V_RETURN( CreateParticleTextures( pd3dDevice ) );
-    V_RETURN( CreateParticleBuffer( pd3dDevice ) );
-    V_RETURN( CreateForceTexture( pd3dDevice ) );
-    V_RETURN( CreateSplatBuffer( pd3dDevice ) );
+    hr = CreateParticleTextures( pd3dDevice );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "Create particle state textures", hr );
+    hr = CreateParticleBuffer( pd3dDevice );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "Create particle vertex buffer", hr );
+    hr = CreateForceTexture( pd3dDevice );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "Create force texture", hr );
+    hr = CreateSplatBuffer( pd3dDevice );
+    if( FAILED( hr ) )
+        return ReportD3D11DeviceCreateFailure( "Create splat vertex buffer", hr );
 
     // Setup the camera's view parameters
     DirectX::XMVECTOR vecEye = DirectX::XMVectorSet( 0.0f, 0.0f, -g_fSpread * 15.0f, 0.0f);
