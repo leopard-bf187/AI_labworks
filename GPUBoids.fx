@@ -1,4 +1,4 @@
-﻿// [LAB3][BOIDS] КАРТА КОДА: GPUBoids.fx содержит вычисления модели Boids и визуализацию.
+// [LAB3][BOIDS] КАРТА КОДА: GPUBoids.fx содержит вычисления модели Boids и визуализацию.
 // [LAB3][BOIDS] ПРАВИЛА: Seek(), Avoid(), Flee(), Separation(), Cohesion(), Alignment().
 // [LAB3][BOIDS] ПОПАРНЫЕ СИЛЫ: PSForce() вызывается техникой AccumulateForces[GS].
 // [LAB3][BOIDS] ОБНОВЛЕНИЕ АГЕНТОВ: PSAdvance() складывает силы и изменяет состояние.
