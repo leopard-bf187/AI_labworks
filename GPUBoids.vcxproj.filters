@@ -29,6 +29,7 @@
     <None Include="Effects11\EffectVariable.inl">
       <Filter>Effects11</Filter>
     </None>
+    <None Include=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GPUBoids.cpp" />
