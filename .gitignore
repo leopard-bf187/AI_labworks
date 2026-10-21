@@ -44,3 +44,7 @@ build_testing*/
 
 build_cwgame*/
 Build_API*/
+
+[Dd]ebug/
+[Rr]elease/
+x64/
