@@ -968,11 +968,9 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* , ID3D11DeviceContext* pd3dConte
     // [LAB3][BOIDS] ЭТАП 4: новый набор состояний становится текущим.
     SwapParticleTextures();
 
-    // DXUT11 camera хранит D3DXMATRIX: копируем совместимый набор из 16 float без aliasing cast.
-    DirectX::XMFLOAT4X4 viewData;
-    DirectX::XMFLOAT4X4 projData;
-    DirectX::XMMATRIX mView = DirectX::XMLoadFloat4x4( &viewData );
-    DirectX::XMMATRIX mProj = DirectX::XMLoadFloat4x4( &projData );
+    // DXUT11 camera возвращает готовые DirectX::XMMATRIX для View и Projection.
+    DirectX::XMMATRIX mView = g_Camera.GetViewMatrix();
+    DirectX::XMMATRIX mProj = g_Camera.GetProjMatrix();
 
     // Render the boids
     // [LAB3][BOIDS] ЭТАП 5: рисуем mesh экземплярами, используя обновлённую позицию каждого boid.
