@@ -48,7 +48,7 @@ SetCppMode(AI_Lab4)
 SetWarnings(AI_Lab4)
 SetEngineTargetLayout(AI_Lab4)
 
-target_include_directories(AI_Lab4 PRIVATE "${CMAKE_SOURCE_DIR}/public")
+target_include_directories(AI_Lab4 PRIVATE "${CMAKE_SOURCE_DIR}/public" "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(AI_Lab4 PRIVATE ${LAB4_KRYSTALLIC_TARGETS})
 
 # Both IDE launches and installed builds use resources relative to the executable.
