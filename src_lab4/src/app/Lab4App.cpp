@@ -203,6 +203,9 @@ void CLab4App::Update(float deltaTime)
     if (m_keyboard.Get() && m_keyboard->IsKeyPressed(KEYCODE_ESCAPE))
         m_platform->RequestQuit(0);
 
+    if (m_keyboard.Get() && m_keyboard->IsKeyPressed(KEYCODE_F1))
+        m_ui.ToggleDiagnostics();
+
     m_ui.Update(deltaTime);
 
     if (m_ui.ConsumeCalculationRequest())
@@ -211,15 +214,9 @@ void CLab4App::Update(float deltaTime)
         m_ui.GetWeatherInput(input);
         SWeatherResult result{};
         const EWeatherStatus status = m_weatherModel.Evaluate(input, result);
-        if (status == EWeatherStatus::Success)
-        {
-            m_ui.SetWeatherResult(result, CWeatherModel::GetCategoryText(result.category));
-        }
-        else
-        {
-            m_ui.ShowCalculationPending();
-            std::fprintf(stderr, "AI_Lab4: Mamdani evaluation failed (status %u).\n", static_cast<unsigned int>(status));
-        }
+        m_ui.SetWeatherResult(result, status == EWeatherStatus::Success ? CWeatherModel::GetCategoryText(result.category) : nullptr);
+        if (status != EWeatherStatus::Success)
+            std::fprintf(stderr, "AI_Lab4: weather evaluation status %u.\n", static_cast<unsigned int>(status));
     }
 }
 
