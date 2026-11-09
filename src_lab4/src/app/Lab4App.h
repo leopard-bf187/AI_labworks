@@ -30,8 +30,8 @@ private:
     CLab4UI m_ui;
 
     void* m_nativeWindow = nullptr;
-    uint32 m_width = 1320;
-    uint32 m_height = 930;
+    uint32 m_width = 1060;
+    uint32 m_height = 720;
     bool m_inputInitialized = false;
 
     bool InitializePlatform();
