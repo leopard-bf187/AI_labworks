@@ -260,16 +260,16 @@ bool CLab4UI::CreateControls()
     struct SGraphPlaceholder { const char* id; ETextID title; CVector2 pos; };
     const SGraphPlaceholder graphs[] =
     {
-        {"graphTemperature", TEXT_GRAPH_TEMPERATURE, CVector2(14.0f, 292.0f)},
-        {"graphHumidity", TEXT_GRAPH_HUMIDITY, CVector2(526.0f, 292.0f)},
-        {"graphPressure", TEXT_GRAPH_PRESSURE, CVector2(14.0f, 478.0f)},
-        {"graphPrecipitation", TEXT_GRAPH_OUTPUT, CVector2(526.0f, 478.0f)}
+        {"graphTemperature", TEXT_GRAPH_TEMPERATURE, CVector2(14.0f, 302.0f)},
+        {"graphHumidity", TEXT_GRAPH_HUMIDITY, CVector2(526.0f, 302.0f)},
+        {"graphPressure", TEXT_GRAPH_PRESSURE, CVector2(14.0f, 484.0f)},
+        {"graphPrecipitation", TEXT_GRAPH_OUTPUT, CVector2(526.0f, 484.0f)}
     };
 
     for (const SGraphPlaceholder& graph : graphs)
     {
         int graphGroup = -1;
-        if (!CreateGroupBox(graph.id, mainFrame, graph.pos, CVector2(496.0f, 172.0f), graph.title, &graphGroup) || !CreateLabel("graphPlaceholder", graphGroup, CVector2(18.0f, 63.0f), CVector2(455.0f, 34.0f), TEXT_GRAPH_PLACEHOLDER))
+        if (!CreateGroupBox(graph.id, mainFrame, graph.pos, CVector2(496.0f, 166.0f), graph.title, &graphGroup) || !CreateLabel("graphPlaceholder", graphGroup, CVector2(18.0f, 63.0f), CVector2(455.0f, 34.0f), TEXT_GRAPH_PLACEHOLDER))
             return false;
     }
     return true;
