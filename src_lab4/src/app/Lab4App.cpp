@@ -75,7 +75,7 @@ bool CLab4App::InitializeRenderer()
         return false;
 
     m_renderer.Initialize(m_frame.Device(), m_frame.Context(), m_frame.Compiler(), RHI_BACKEND_OPENGL);
-    return m_ui.Initialize(&m_renderer, float(m_width), float(m_height));
+    return m_ui.Initialize(&m_renderer, float(m_width), float(m_height), &m_weatherModel.GetFuzzySystem());
 }
 
 bool CLab4App::InitializeInput()
@@ -213,7 +213,7 @@ void CLab4App::Update(float deltaTime)
         const EWeatherStatus status = m_weatherModel.Evaluate(input, result);
         if (status == EWeatherStatus::Success)
         {
-            m_ui.SetWeatherResult(result.probability, CWeatherModel::GetCategoryText(result.category), result.activeRuleCount);
+            m_ui.SetWeatherResult(result, CWeatherModel::GetCategoryText(result.category));
         }
         else
         {
