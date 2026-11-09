@@ -135,6 +135,10 @@ bool CLab4UI::CreateGroupBox(const char* id, int parentIndex, const CVector2& po
     GUI_STD_GROUPBOX_DESC group{};
     group.m_text = m_textRefs[title];
     group.m_borderWidth = 1.5f;
+    // Use a sufficiently wide title gap for the graph groupboxes.
+    // Automatic header sizing is too narrow for their Cyrillic captions.
+    if (title >= TEXT_GRAPH_TEMPERATURE && title <= TEXT_GRAPH_OUTPUT)
+        group.m_headerWidth = title == TEXT_GRAPH_OUTPUT ? 442.0f : 370.0f;
 
     GUI_CONTROL_DESC desc{};
     std::snprintf(desc.m_controlID, sizeof(desc.m_controlID), "%s", id);
@@ -235,7 +239,7 @@ bool CLab4UI::CreateControls()
 
     int inputGroup = -1;
     int resultGroup = -1;
-    if (!CreateGroupBox("inputGroup", mainFrame, CVector2(14.0f, 14.0f), CVector2(390.0f, 260.0f), TEXT_INPUT_GROUP, &inputGroup) || !CreateGroupBox("resultGroup", mainFrame, CVector2(418.0f, 14.0f), CVector2(604.0f, 260.0f), TEXT_RESULT_GROUP, &resultGroup))
+    if (!CreateGroupBox("inputGroup", mainFrame, CVector2(14.0f, 14.0f), CVector2(390.0f, 280.0f), TEXT_INPUT_GROUP, &inputGroup) || !CreateGroupBox("resultGroup", mainFrame, CVector2(418.0f, 14.0f), CVector2(604.0f, 280.0f), TEXT_RESULT_GROUP, &resultGroup))
         return false;
 
     if (!CreateLabel("temperatureTitle", inputGroup, CVector2(14.0f, 19.0f), CVector2(230.0f, 23.0f), TEXT_TEMPERATURE) || !CreateLabel("temperatureValue", inputGroup, CVector2(250.0f, 19.0f), CVector2(120.0f, 23.0f), TEXT_VALUE_TEMPERATURE) || !CreateSlider("temperatureSlider", inputGroup, CVector2(14.0f, 47.0f), -30.0f, 50.0f, m_input.temperature, SLOT_TEMPERATURE))
