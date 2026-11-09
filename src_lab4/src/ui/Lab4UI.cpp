@@ -30,7 +30,7 @@ namespace
         {"lab4_humidity", "Влажность"},
         {"lab4_pressure", "Атмосферное давление"},
         {"lab4_calculate", "Рассчитать"},
-        {"lab4_auto", "Автоматический расчёт"},
+        {"lab4_auto", "Авторасчёт"},
         {"lab4_result_title", "Вероятность осадков:"},
         {"lab4_rules_title", "Активные правила:"},
         {"lab4_status_title", "Состояние:"},
@@ -38,7 +38,7 @@ namespace
         {"lab4_graph_humidity", "Функции принадлежности: влажность"},
         {"lab4_graph_pressure", "Функции принадлежности: давление"},
         {"lab4_graph_output", "Функции принадлежности: вероятность осадков"},
-        {"lab4_graph_waiting", "График будет добавлен на этапе реализации Мамдани"},
+        {"lab4_graph_waiting", "График появится после реализации Мамдани"},
         {"lab4_value_temperature", "18.0 °C"},
         {"lab4_value_humidity", "65.0 %"},
         {"lab4_value_pressure", "1012.0 гПа"},
@@ -65,7 +65,7 @@ bool CLab4UI::LoadFonts()
         if (result == GUI_ERR_OK)
             result = m_context->CreateFontFamilyObject(fonts[i].id, m_fonts[i].ReleaseAndGetAddressOf());
         if (result == GUI_ERR_OK)
-            result = m_fonts[i]->AddFontStyleData(GUI_FONT_REGULAR, fontData.Get(), ranges, 18);
+            result = m_fonts[i]->AddFontStyleData(GUI_FONT_REGULAR, fontData.Get(), ranges, 16);
         if (result == GUI_ERR_OK)
             result = m_fonts[i]->Build();
         if (result != GUI_ERR_OK)
@@ -181,7 +181,7 @@ bool CLab4UI::CreateSlider(const char* id, int parentIndex, const CVector2& pos,
     desc.m_initialState = GUI_STATE_ENABLED | GUI_STATE_VISIBLE;
     desc.m_controlFlags = GUI_FLAG_SUPPORTS_INPUT;
     desc.m_pos = pos;
-    desc.m_size = CVector2(365.0f, 27.0f);
+    desc.m_size = CVector2(352.0f, 23.0f);
     desc.m_userData = &m_sliderSlotIds[slot];
     desc.m_subtypeControlDescPtr = &slider;
     return m_context->CreateControl(&desc, &m_sliders[slot]) == GUI_ERR_OK;
@@ -218,54 +218,54 @@ bool CLab4UI::CreateAutoCheckbox(int parentIndex)
     desc.m_parentIndex = parentIndex;
     desc.m_initialState = GUI_STATE_ENABLED | GUI_STATE_VISIBLE;
     desc.m_controlFlags = GUI_FLAG_SUPPORTS_INPUT;
-    desc.m_pos = CVector2(202.0f, 265.0f);
-    desc.m_size = CVector2(194.0f, 30.0f);
+    desc.m_pos = CVector2(182.0f, 215.0f);
+    desc.m_size = CVector2(184.0f, 28.0f);
     desc.m_subtypeControlDescPtr = &checkbox;
     return m_context->CreateControl(&desc) == GUI_ERR_OK;
 }
 
 bool CLab4UI::CreateControls()
 {
-    if (!CreateLabel("buildInfo", -1, CVector2(14.0f, 6.0f), CVector2(1210.0f, 24.0f), TEXT_BUILD))
+    if (!CreateLabel("buildInfo", -1, CVector2(14.0f, 5.0f), CVector2(1030.0f, 24.0f), TEXT_BUILD))
         return false;
 
     int mainFrame = -1;
-    if (!CreateFrame("mainFrame", -1, CVector2(12.0f, 34.0f), CVector2(1280.0f, 856.0f), &mainFrame))
+    if (!CreateFrame("mainFrame", -1, CVector2(12.0f, 34.0f), CVector2(1036.0f, 664.0f), &mainFrame))
         return false;
 
     int inputGroup = -1;
     int resultGroup = -1;
-    if (!CreateGroupBox("inputGroup", mainFrame, CVector2(14.0f, 14.0f), CVector2(420.0f, 320.0f), TEXT_INPUT_GROUP, &inputGroup) || !CreateGroupBox("resultGroup", mainFrame, CVector2(448.0f, 14.0f), CVector2(814.0f, 320.0f), TEXT_RESULT_GROUP, &resultGroup))
+    if (!CreateGroupBox("inputGroup", mainFrame, CVector2(14.0f, 14.0f), CVector2(390.0f, 260.0f), TEXT_INPUT_GROUP, &inputGroup) || !CreateGroupBox("resultGroup", mainFrame, CVector2(418.0f, 14.0f), CVector2(604.0f, 260.0f), TEXT_RESULT_GROUP, &resultGroup))
         return false;
 
-    if (!CreateLabel("temperatureTitle", inputGroup, CVector2(14.0f, 24.0f), CVector2(235.0f, 25.0f), TEXT_TEMPERATURE) || !CreateLabel("temperatureValue", inputGroup, CVector2(266.0f, 24.0f), CVector2(118.0f, 25.0f), TEXT_VALUE_TEMPERATURE) || !CreateSlider("temperatureSlider", inputGroup, CVector2(14.0f, 55.0f), -30.0f, 50.0f, m_input.temperature, SLOT_TEMPERATURE))
+    if (!CreateLabel("temperatureTitle", inputGroup, CVector2(14.0f, 19.0f), CVector2(230.0f, 23.0f), TEXT_TEMPERATURE) || !CreateLabel("temperatureValue", inputGroup, CVector2(250.0f, 19.0f), CVector2(120.0f, 23.0f), TEXT_VALUE_TEMPERATURE) || !CreateSlider("temperatureSlider", inputGroup, CVector2(14.0f, 47.0f), -30.0f, 50.0f, m_input.temperature, SLOT_TEMPERATURE))
         return false;
 
-    if (!CreateLabel("humidityTitle", inputGroup, CVector2(14.0f, 106.0f), CVector2(235.0f, 25.0f), TEXT_HUMIDITY) || !CreateLabel("humidityValue", inputGroup, CVector2(266.0f, 106.0f), CVector2(118.0f, 25.0f), TEXT_VALUE_HUMIDITY) || !CreateSlider("humiditySlider", inputGroup, CVector2(14.0f, 138.0f), 0.0f, 100.0f, m_input.humidity, SLOT_HUMIDITY))
+    if (!CreateLabel("humidityTitle", inputGroup, CVector2(14.0f, 83.0f), CVector2(230.0f, 23.0f), TEXT_HUMIDITY) || !CreateLabel("humidityValue", inputGroup, CVector2(250.0f, 83.0f), CVector2(120.0f, 23.0f), TEXT_VALUE_HUMIDITY) || !CreateSlider("humiditySlider", inputGroup, CVector2(14.0f, 111.0f), 0.0f, 100.0f, m_input.humidity, SLOT_HUMIDITY))
         return false;
 
-    if (!CreateLabel("pressureTitle", inputGroup, CVector2(14.0f, 187.0f), CVector2(235.0f, 25.0f), TEXT_PRESSURE) || !CreateLabel("pressureValue", inputGroup, CVector2(266.0f, 187.0f), CVector2(118.0f, 25.0f), TEXT_VALUE_PRESSURE) || !CreateSlider("pressureSlider", inputGroup, CVector2(14.0f, 219.0f), 950.0f, 1050.0f, m_input.pressure, SLOT_PRESSURE))
+    if (!CreateLabel("pressureTitle", inputGroup, CVector2(14.0f, 147.0f), CVector2(230.0f, 23.0f), TEXT_PRESSURE) || !CreateLabel("pressureValue", inputGroup, CVector2(250.0f, 147.0f), CVector2(120.0f, 23.0f), TEXT_VALUE_PRESSURE) || !CreateSlider("pressureSlider", inputGroup, CVector2(14.0f, 175.0f), 950.0f, 1050.0f, m_input.pressure, SLOT_PRESSURE))
         return false;
 
-    if (!CreateButton("calculateButton", inputGroup, CVector2(14.0f, 265.0f), CVector2(170.0f, 30.0f), TEXT_CALCULATE) || !CreateAutoCheckbox(inputGroup))
+    if (!CreateButton("calculateButton", inputGroup, CVector2(14.0f, 215.0f), CVector2(150.0f, 28.0f), TEXT_CALCULATE) || !CreateAutoCheckbox(inputGroup))
         return false;
 
-    if (!CreateLabel("resultTitle", resultGroup, CVector2(20.0f, 28.0f), CVector2(350.0f, 27.0f), TEXT_RESULT_TITLE) || !CreateLabel("resultValue", resultGroup, CVector2(20.0f, 59.0f), CVector2(300.0f, 42.0f), TEXT_VALUE_RESULT) || !CreateLabel("rulesTitle", resultGroup, CVector2(20.0f, 134.0f), CVector2(350.0f, 27.0f), TEXT_RULES_TITLE) || !CreateLabel("ruleValue", resultGroup, CVector2(20.0f, 167.0f), CVector2(280.0f, 28.0f), TEXT_VALUE_RULES) || !CreateLabel("statusTitle", resultGroup, CVector2(20.0f, 214.0f), CVector2(350.0f, 27.0f), TEXT_STATUS_TITLE) || !CreateLabel("statusValue", resultGroup, CVector2(20.0f, 249.0f), CVector2(735.0f, 27.0f), TEXT_VALUE_STATUS))
+    if (!CreateLabel("resultTitle", resultGroup, CVector2(18.0f, 20.0f), CVector2(560.0f, 24.0f), TEXT_RESULT_TITLE) || !CreateLabel("resultValue", resultGroup, CVector2(18.0f, 48.0f), CVector2(540.0f, 30.0f), TEXT_VALUE_RESULT) || !CreateLabel("rulesTitle", resultGroup, CVector2(18.0f, 93.0f), CVector2(560.0f, 24.0f), TEXT_RULES_TITLE) || !CreateLabel("ruleValue", resultGroup, CVector2(18.0f, 120.0f), CVector2(540.0f, 25.0f), TEXT_VALUE_RULES) || !CreateLabel("statusTitle", resultGroup, CVector2(18.0f, 160.0f), CVector2(560.0f, 24.0f), TEXT_STATUS_TITLE) || !CreateLabel("statusValue", resultGroup, CVector2(18.0f, 188.0f), CVector2(560.0f, 35.0f), TEXT_VALUE_STATUS))
         return false;
 
     struct SGraphPlaceholder { const char* id; ETextID title; CVector2 pos; };
     const SGraphPlaceholder graphs[] =
     {
-        {"graphTemperature", TEXT_GRAPH_TEMPERATURE, CVector2(14.0f, 352.0f)},
-        {"graphHumidity", TEXT_GRAPH_HUMIDITY, CVector2(648.0f, 352.0f)},
-        {"graphPressure", TEXT_GRAPH_PRESSURE, CVector2(14.0f, 578.0f)},
-        {"graphPrecipitation", TEXT_GRAPH_OUTPUT, CVector2(648.0f, 578.0f)}
+        {"graphTemperature", TEXT_GRAPH_TEMPERATURE, CVector2(14.0f, 292.0f)},
+        {"graphHumidity", TEXT_GRAPH_HUMIDITY, CVector2(526.0f, 292.0f)},
+        {"graphPressure", TEXT_GRAPH_PRESSURE, CVector2(14.0f, 478.0f)},
+        {"graphPrecipitation", TEXT_GRAPH_OUTPUT, CVector2(526.0f, 478.0f)}
     };
 
     for (const SGraphPlaceholder& graph : graphs)
     {
         int graphGroup = -1;
-        if (!CreateGroupBox(graph.id, mainFrame, graph.pos, CVector2(614.0f, 212.0f), graph.title, &graphGroup) || !CreateLabel("graphPlaceholder", graphGroup, CVector2(20.0f, 80.0f), CVector2(570.0f, 32.0f), TEXT_GRAPH_PLACEHOLDER))
+        if (!CreateGroupBox(graph.id, mainFrame, graph.pos, CVector2(496.0f, 172.0f), graph.title, &graphGroup) || !CreateLabel("graphPlaceholder", graphGroup, CVector2(18.0f, 63.0f), CVector2(455.0f, 34.0f), TEXT_GRAPH_PLACEHOLDER))
             return false;
     }
     return true;
