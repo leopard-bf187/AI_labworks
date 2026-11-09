@@ -48,10 +48,10 @@ bool CLab4App::InitializePlatform()
     desc.y = 60;
     desc.style.caption = 1;
     desc.style.sysmenu = 1;
-    desc.style.resizable = 1;
+    desc.style.resizable = 0;
     desc.style.visible = 1;
     desc.style.minimizeButton = 1;
-    desc.style.maximizeButton = 1;
+    desc.style.maximizeButton = 0;
     desc.backgroundColor.mask = 0x202040;
 
     if (m_platform->CreateNativeWindow("AI Lab 4 - Fuzzy Weather", &desc, &m_windowCallback, nullptr, m_window.ReleaseAndGetAddressOf()) != PLATFORM_ERR_OK)
