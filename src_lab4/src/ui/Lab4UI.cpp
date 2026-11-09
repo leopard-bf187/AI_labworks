@@ -435,6 +435,20 @@ void CLab4UI::ToggleDiagnostics()
         return;
 
     m_diagnosticsVisible = !m_diagnosticsVisible;
+
+    // The chart groupboxes and the diagnostics occupy the same screen area.
+    // Make their visibility mutually exclusive rather than relying on
+    // sibling draw order and background transparency.
+    for (int i = 0; i < GRAPH_COUNT; ++i)
+    {
+        if (!m_graphGroupControls[i].Get())
+            continue;
+
+        dword graphState = m_graphGroupControls[i]->GetState();
+        graphState = m_diagnosticsVisible ? (graphState & ~GUI_STATE_VISIBLE) : (graphState | GUI_STATE_VISIBLE);
+        m_graphGroupControls[i]->SetState(graphState);
+    }
+
     dword state = m_diagnosticsPanel->GetState();
     state = m_diagnosticsVisible ? (state | GUI_STATE_VISIBLE) : (state & ~GUI_STATE_VISIBLE);
     m_diagnosticsPanel->SetState(state);
@@ -482,6 +496,9 @@ bool CLab4UI::CreateControls()
     {
         int graphGroup = -1;
         if (!CreateGroupBox(graphs[i].id, mainFrame, graphs[i].pos, CVector2(496.0f, 166.0f), graphs[i].title, &graphGroup) || !CreateMembershipGraph("membershipPlot", graphGroup, i))
+            return false;
+
+        if (m_context->GetControlProxy(graphGroup, m_graphGroupControls[i].ReleaseAndGetAddressOf()) != GUI_ERR_OK || !m_graphGroupControls[i].Get())
             return false;
     }
 
@@ -652,6 +669,8 @@ void CLab4UI::Shutdown()
         g_activeUI = nullptr;
 
     m_diagnosticsPanel.Reset();
+    for (int i = 0; i < GRAPH_COUNT; ++i)
+        m_graphGroupControls[i].Reset();
     m_context.Reset();
     for (int i = 0; i < SLOT_COUNT; ++i)
     {
