@@ -203,8 +203,19 @@ void CLab4App::Update(float deltaTime)
     if (m_keyboard.Get() && m_keyboard->IsKeyPressed(KEYCODE_ESCAPE))
         m_platform->RequestQuit(0);
 
-    if (m_keyboard.Get() && m_keyboard->IsKeyPressed(KEYCODE_F1))
+    // Use a key-down transition instead of relying on the per-device Raw Input
+    // pressed event. On Windows, use the focused window's key state as a
+    // fallback when keyboard device enumeration or Raw Input misses F1.
+    bool f1Down = m_keyboard.Get() && m_keyboard->IsKeyDown(KEYCODE_F1);
+#if defined(KRYSTALLIC_OS_WINNT)
+    if (m_nativeWindow && GetForegroundWindow() == static_cast<HWND>(m_nativeWindow))
+        f1Down = f1Down || ((GetAsyncKeyState(VK_F1) & 0x8000) != 0);
+    else
+        f1Down = false;
+#endif
+    if (f1Down && !m_f1WasDown)
         m_ui.ToggleDiagnostics();
+    m_f1WasDown = f1Down;
 
     m_ui.Update(deltaTime);
 
@@ -266,6 +277,7 @@ int CLab4App::Run()
 
 void CLab4App::Shutdown()
 {
+    m_f1WasDown = false;
     m_guiInput.Reset();
     m_mouse.Reset();
     m_keyboard.Reset();

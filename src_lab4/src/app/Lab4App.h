@@ -35,6 +35,7 @@ private:
     uint32 m_width = 1060;
     uint32 m_height = 720;
     bool m_inputInitialized = false;
+    bool m_f1WasDown = false;
 
     bool InitializePlatform();
     bool InitializeRenderer();

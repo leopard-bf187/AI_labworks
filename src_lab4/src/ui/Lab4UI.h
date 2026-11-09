@@ -79,6 +79,7 @@ private:
 
     krystallic::RefCounted<krystallic::GUI::IGUIContext> m_context;
     krystallic::RefCounted<krystallic::GUI::IGUIControlProxy> m_diagnosticsPanel;
+    krystallic::RefCounted<krystallic::GUI::IGUIControlProxy> m_graphGroupControls[GRAPH_COUNT];
     krystallic::RefCounted<krystallic::GUI::IGUIStringTable> m_stringTable;
     krystallic::RefCounted<krystallic::GUI::IGUIFont> m_fonts[2];
     krystallic::RefCounted<krystallic::GUI::IGUIString> m_values[SLOT_COUNT];
