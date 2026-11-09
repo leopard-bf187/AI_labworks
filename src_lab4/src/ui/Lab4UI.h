@@ -3,6 +3,7 @@
 #include "pch.h"
 #include "gui.h"
 #include "weather/WeatherTypes.h"
+#include "MembershipGraph.h"
 
 class CLab4UI
 {
@@ -32,7 +33,6 @@ private:
         TEXT_GRAPH_HUMIDITY,
         TEXT_GRAPH_PRESSURE,
         TEXT_GRAPH_OUTPUT,
-        TEXT_GRAPH_PLACEHOLDER,
         TEXT_VALUE_TEMPERATURE,
         TEXT_VALUE_HUMIDITY,
         TEXT_VALUE_PRESSURE,
@@ -41,6 +41,29 @@ private:
         TEXT_VALUE_STATUS,
         TEXT_COUNT
     };
+
+    enum EGraphTextID : int
+    {
+        GRAPH_TEXT_LOW,
+        GRAPH_TEXT_MEDIUM,
+        GRAPH_TEXT_HIGH,
+        GRAPH_TEXT_ZERO,
+        GRAPH_TEXT_ONE,
+        GRAPH_TEXT_T_MIN,
+        GRAPH_TEXT_T_MAX,
+        GRAPH_TEXT_H_MIN,
+        GRAPH_TEXT_H_MAX,
+        GRAPH_TEXT_P_MIN,
+        GRAPH_TEXT_P_MAX,
+        GRAPH_TEXT_O_MIN,
+        GRAPH_TEXT_O_MAX,
+        GRAPH_TEXT_COUNT
+    };
+
+    static constexpr int GRAPH_COUNT = 4;
+    CMembershipGraphSystem m_graphSystem;
+    SMembershipGraphView m_graphViews[GRAPH_COUNT]{};
+    krystallic::GUI::GUI_TEXT_REF m_graphTextRefs[GRAPH_TEXT_COUNT]{};
 
     krystallic::RefCounted<krystallic::GUI::IGUIContext> m_context;
     krystallic::RefCounted<krystallic::GUI::IGUIStringTable> m_stringTable;
@@ -61,6 +84,9 @@ private:
     bool LoadFonts();
     bool LoadStrings();
     bool CreateControls();
+    bool InitializeGraphViews(const CFuzzySystem* system);
+    void SyncGraphInputs();
+    bool CreateMembershipGraph(const char* id, int parentIndex, int graphIndex);
     bool CreateFrame(const char* id, int parentIndex, const krystallic::SIMDMath::CVector2& pos, const krystallic::SIMDMath::CVector2& size, int* outIndex);
     bool CreateGroupBox(const char* id, int parentIndex, const krystallic::SIMDMath::CVector2& pos, const krystallic::SIMDMath::CVector2& size, ETextID title, int* outIndex);
     bool CreateLabel(const char* id, int parentIndex, const krystallic::SIMDMath::CVector2& pos, const krystallic::SIMDMath::CVector2& size, ETextID text, int* outIndex = nullptr);
@@ -75,7 +101,7 @@ private:
     static ERRCODE OnCalculatePressed();
 
 public:
-    bool Initialize(krystallic::GUI::IGUIRenderStrategy* renderer, float width, float height);
+    bool Initialize(krystallic::GUI::IGUIRenderStrategy* renderer, float width, float height, const CFuzzySystem* fuzzySystem);
     void Shutdown();
     void Update(float deltaTime);
     void Resize(float width, float height);
@@ -84,5 +110,5 @@ public:
     bool ConsumeCalculationRequest();
     void GetWeatherInput(SWeatherInput& outInput) const;
     void ShowCalculationPending();
-    void SetWeatherResult(float probability, const char* category, uint32 activeRules);
+    void SetWeatherResult(const SWeatherResult& result, const char* category);
 };
