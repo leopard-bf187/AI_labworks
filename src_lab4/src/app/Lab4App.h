@@ -4,6 +4,7 @@
 #include "platform.h"
 #include "render/GUIRHI.h"
 #include "ui/Lab4UI.h"
+#include "weather/WeatherModel.h"
 
 class CLab4App
 {
@@ -28,6 +29,7 @@ private:
     CGUIRHIFrame m_frame;
     CGUIRHIStrategy m_renderer;
     CLab4UI m_ui;
+    CWeatherModel m_weatherModel;
 
     void* m_nativeWindow = nullptr;
     uint32 m_width = 1060;

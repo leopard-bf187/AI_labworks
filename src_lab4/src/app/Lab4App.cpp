@@ -209,9 +209,17 @@ void CLab4App::Update(float deltaTime)
     {
         SWeatherInput input{};
         m_ui.GetWeatherInput(input);
-        std::printf("Weather input: T=%.1f C, humidity=%.1f %%, pressure=%.1f hPa\n", input.temperature, input.humidity, input.pressure);
-        m_ui.ShowCalculationPending();
-        // Mamdani evaluation will be wired here after the fuzzy model is built.
+        SWeatherResult result{};
+        const EWeatherStatus status = m_weatherModel.Evaluate(input, result);
+        if (status == EWeatherStatus::Success)
+        {
+            m_ui.SetWeatherResult(result.probability, CWeatherModel::GetCategoryText(result.category), result.activeRuleCount);
+        }
+        else
+        {
+            m_ui.ShowCalculationPending();
+            std::fprintf(stderr, "AI_Lab4: Mamdani evaluation failed (status %u).\n", static_cast<unsigned int>(status));
+        }
     }
 }
 
