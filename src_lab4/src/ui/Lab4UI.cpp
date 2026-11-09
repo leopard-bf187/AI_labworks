@@ -38,13 +38,12 @@ namespace
         {"lab4_graph_humidity", "Функции принадлежности: влажность"},
         {"lab4_graph_pressure", "Функции принадлежности: давление"},
         {"lab4_graph_output", "Функции принадлежности: вероятность осадков"},
-        {"lab4_graph_waiting", "График появится после реализации Мамдани"},
         {"lab4_value_temperature", "18.0 °C"},
         {"lab4_value_humidity", "65.0 %"},
         {"lab4_value_pressure", "1012.0 гПа"},
         {"lab4_value_result", "—"},
         {"lab4_value_rules", "—"},
-        {"lab4_value_status", "Алгоритм Мамдани пока не подключён"}
+        {"lab4_value_status", "Нажмите «Рассчитать»"}
     };
 }
 
@@ -111,7 +110,84 @@ bool CLab4UI::LoadStrings()
     if (m_stringTable->GetStringByID(g_textEntries[TEXT_VALUE_RESULT].id, m_resultValue.ReleaseAndGetAddressOf()) != GUI_ERR_OK || m_stringTable->GetStringByID(g_textEntries[TEXT_VALUE_RULES].id, m_ruleValue.ReleaseAndGetAddressOf()) != GUI_ERR_OK || m_stringTable->GetStringByID(g_textEntries[TEXT_VALUE_STATUS].id, m_statusValue.ReleaseAndGetAddressOf()) != GUI_ERR_OK)
         return false;
 
+    static const STextEntry graphTextEntries[] =
+    {
+        {"graph_term_low", "Низкая"},
+        {"graph_term_medium", "Средняя"},
+        {"graph_term_high", "Высокая"},
+        {"graph_axis_zero", "0"},
+        {"graph_axis_one", "1"},
+        {"graph_t_min", "-30"},
+        {"graph_t_max", "50"},
+        {"graph_h_min", "0"},
+        {"graph_h_max", "100"},
+        {"graph_p_min", "950"},
+        {"graph_p_max", "1050"},
+        {"graph_o_min", "0%"},
+        {"graph_o_max", "100%"}
+    };
+    static_assert(sizeof(graphTextEntries) / sizeof(graphTextEntries[0]) == GRAPH_TEXT_COUNT);
+
+    for (int i = 0; i < GRAPH_TEXT_COUNT; ++i)
+    {
+        if (m_stringTable->AddPlainString(graphTextEntries[i].id, graphTextEntries[i].value, &m_textStyle, &m_graphTextRefs[i]) != GUI_ERR_OK)
+            return false;
+    }
+
     return m_context->SetActiveStringTable(m_stringTable.Get()) == GUI_ERR_OK;
+}
+
+bool CLab4UI::InitializeGraphViews(const CFuzzySystem* system)
+{
+    if (!system)
+        return false;
+
+    const EFuzzyVariable variables[GRAPH_COUNT] = {EFuzzyVariable::Temperature, EFuzzyVariable::Humidity, EFuzzyVariable::Pressure, EFuzzyVariable::Precipitation};
+    const float minValues[GRAPH_COUNT] = {-30.0f, 0.0f, 950.0f, 0.0f};
+    const float maxValues[GRAPH_COUNT] = {50.0f, 100.0f, 1050.0f, 100.0f};
+
+    for (int i = 0; i < GRAPH_COUNT; ++i)
+    {
+        SMembershipGraphView& view = m_graphViews[i];
+        view.model = system;
+        view.variable = variables[i];
+        view.minValue = minValues[i];
+        view.maxValue = maxValues[i];
+        view.minLabel = m_graphTextRefs[GRAPH_TEXT_T_MIN + i * 2];
+        view.maxLabel = m_graphTextRefs[GRAPH_TEXT_T_MAX + i * 2];
+        view.zeroLabel = m_graphTextRefs[GRAPH_TEXT_ZERO];
+        view.oneLabel = m_graphTextRefs[GRAPH_TEXT_ONE];
+        for (int term = 0; term < 3; ++term)
+            view.termLabels[term] = m_graphTextRefs[GRAPH_TEXT_LOW + term];
+    }
+    SyncGraphInputs();
+    return true;
+}
+
+void CLab4UI::SyncGraphInputs()
+{
+    m_graphViews[0].currentValue = m_input.temperature;
+    m_graphViews[1].currentValue = m_input.humidity;
+    m_graphViews[2].currentValue = m_input.pressure;
+}
+
+bool CLab4UI::CreateMembershipGraph(const char* id, int parentIndex, int graphIndex)
+{
+    if (graphIndex < 0 || graphIndex >= GRAPH_COUNT)
+        return false;
+
+    GUI_MEMBERSHIP_GRAPH_DESC graph{};
+    graph.view = &m_graphViews[graphIndex];
+
+    GUI_CONTROL_DESC desc{};
+    std::snprintf(desc.m_controlID, sizeof(desc.m_controlID), "%s", id);
+    desc.m_type = CMembershipGraphSystem::CONTROL_TYPE;
+    desc.m_parentIndex = parentIndex;
+    desc.m_initialState = GUI_STATE_VISIBLE | GUI_STATE_ENABLED;
+    desc.m_pos = CVector2(6.0f, 4.0f);
+    desc.m_size = CVector2(460.0f, 124.0f);
+    desc.m_subtypeControlDescPtr = &graph;
+    return m_context->CreateControl(&desc) == GUI_ERR_OK;
 }
 
 bool CLab4UI::CreateFrame(const char* id, int parentIndex, const CVector2& pos, const CVector2& size, int* outIndex)
@@ -257,8 +333,8 @@ bool CLab4UI::CreateControls()
     if (!CreateLabel("resultTitle", resultGroup, CVector2(18.0f, 20.0f), CVector2(560.0f, 24.0f), TEXT_RESULT_TITLE) || !CreateLabel("resultValue", resultGroup, CVector2(18.0f, 48.0f), CVector2(540.0f, 30.0f), TEXT_VALUE_RESULT) || !CreateLabel("rulesTitle", resultGroup, CVector2(18.0f, 93.0f), CVector2(560.0f, 24.0f), TEXT_RULES_TITLE) || !CreateLabel("ruleValue", resultGroup, CVector2(18.0f, 120.0f), CVector2(540.0f, 25.0f), TEXT_VALUE_RULES) || !CreateLabel("statusTitle", resultGroup, CVector2(18.0f, 160.0f), CVector2(560.0f, 24.0f), TEXT_STATUS_TITLE) || !CreateLabel("statusValue", resultGroup, CVector2(18.0f, 188.0f), CVector2(560.0f, 35.0f), TEXT_VALUE_STATUS))
         return false;
 
-    struct SGraphPlaceholder { const char* id; ETextID title; CVector2 pos; };
-    const SGraphPlaceholder graphs[] =
+    struct SGraphDefinition { const char* id; ETextID title; CVector2 pos; };
+    const SGraphDefinition graphs[] =
     {
         {"graphTemperature", TEXT_GRAPH_TEMPERATURE, CVector2(14.0f, 302.0f)},
         {"graphHumidity", TEXT_GRAPH_HUMIDITY, CVector2(526.0f, 302.0f)},
@@ -266,10 +342,10 @@ bool CLab4UI::CreateControls()
         {"graphPrecipitation", TEXT_GRAPH_OUTPUT, CVector2(526.0f, 484.0f)}
     };
 
-    for (const SGraphPlaceholder& graph : graphs)
+    for (int i = 0; i < GRAPH_COUNT; ++i)
     {
         int graphGroup = -1;
-        if (!CreateGroupBox(graph.id, mainFrame, graph.pos, CVector2(496.0f, 166.0f), graph.title, &graphGroup) || !CreateLabel("graphPlaceholder", graphGroup, CVector2(18.0f, 63.0f), CVector2(455.0f, 34.0f), TEXT_GRAPH_PLACEHOLDER))
+        if (!CreateGroupBox(graphs[i].id, mainFrame, graphs[i].pos, CVector2(496.0f, 166.0f), graphs[i].title, &graphGroup) || !CreateMembershipGraph("membershipPlot", graphGroup, i))
             return false;
     }
     return true;
@@ -311,6 +387,8 @@ ERRCODE CLab4UI::OnSliderChanged(int controlIndex, float oldValue, float newValu
     }
 
     g_activeUI->UpdateInputLabels();
+    g_activeUI->SyncGraphInputs();
+    g_activeUI->ShowCalculationPending();
     if (g_activeUI->m_autoCalculation)
         g_activeUI->m_calculationRequested = true;
     return GUI_ERR_OK;
@@ -338,9 +416,9 @@ ERRCODE CLab4UI::OnCalculatePressed()
     return GUI_ERR_OK;
 }
 
-bool CLab4UI::Initialize(IGUIRenderStrategy* renderer, float width, float height)
+bool CLab4UI::Initialize(IGUIRenderStrategy* renderer, float width, float height, const CFuzzySystem* fuzzySystem)
 {
-    if (!renderer || g_activeUI)
+    if (!renderer || !fuzzySystem || g_activeUI)
         return false;
 
     const qword mask = GUI_REG_STD_CONTROL_SYS_FRAME | GUI_REG_STD_CONTROL_SYS_BUTTON | GUI_REG_STD_CONTROL_SYS_LABEL | GUI_REG_STD_CONTROL_SYS_SLIDER | GUI_REG_STD_CONTROL_SYS_GROUPBOX | GUI_REG_STD_CONTROL_SYS_CHECKBOX;
@@ -348,7 +426,7 @@ bool CLab4UI::Initialize(IGUIRenderStrategy* renderer, float width, float height
         return false;
 
     g_activeUI = this;
-    if (!LoadFonts() || !LoadStrings() || !CreateControls())
+    if (!LoadFonts() || !LoadStrings() || !InitializeGraphViews(fuzzySystem) || m_graphSystem.Register(m_context.Get()) != GUI_ERR_OK || !CreateControls())
     {
         Shutdown();
         return false;
@@ -394,17 +472,27 @@ void CLab4UI::GetWeatherInput(SWeatherInput& outInput) const
 
 void CLab4UI::ShowCalculationPending()
 {
+    m_graphViews[3].hasResult = false;
     SetText(m_resultValue.Get(), "—");
     SetText(m_ruleValue.Get(), "—");
-    SetText(m_statusValue.Get(), "Алгоритм Мамдани пока не подключён");
+    SetText(m_statusValue.Get(), "Параметры изменены — выполните расчёт");
 }
 
-void CLab4UI::SetWeatherResult(float probability, const char* category, uint32 activeRules)
+void CLab4UI::SetWeatherResult(const SWeatherResult& result, const char* category)
 {
+    if (result.status != EWeatherStatus::Success)
+    {
+        ShowCalculationPending();
+        return;
+    }
+
+    m_graphViews[3].result = result;
+    m_graphViews[3].hasResult = true;
+
     char text[128];
-    std::snprintf(text, sizeof(text), "%.1f %% (%s)", probability, category ? category : "—");
+    std::snprintf(text, sizeof(text), "%.1f %% (%s)", result.probability, category ? category : "—");
     SetText(m_resultValue.Get(), text);
-    std::snprintf(text, sizeof(text), "%u", unsigned(activeRules));
+    std::snprintf(text, sizeof(text), "%u", result.activeRuleCount);
     SetText(m_ruleValue.Get(), text);
     SetText(m_statusValue.Get(), "Расчёт завершён");
 }
@@ -428,4 +516,6 @@ void CLab4UI::Shutdown()
     m_fonts[1].Reset();
     m_calculationRequested = false;
     m_autoCalculation = false;
+    for (int i = 0; i < GRAPH_COUNT; ++i)
+        m_graphViews[i] = {};
 }
