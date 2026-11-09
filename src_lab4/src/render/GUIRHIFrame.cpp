@@ -67,7 +67,7 @@ bool CGUIRHIFrame::Initialize(IPlatformManager* manager, IPlatformWindow* window
     return false;
 #endif
 
-    if (!createFactory || createFactory(g_stdlibDefaultAllocator, m_factory.ReleaseAndGetAddressOf()) != RHI_ERR_OK)
+    if (!createFactory || createFactory(Stdlib::g_stdlibDefaultAllocator, m_factory.ReleaseAndGetAddressOf()) != RHI_ERR_OK)
         return false;
 
     SNativeHandle platformHandle{};

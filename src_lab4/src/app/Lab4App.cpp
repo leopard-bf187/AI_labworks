@@ -37,7 +37,7 @@ bool CLab4App::InitializePlatform()
 {
 #if defined(KRYSTALLIC_OS_WINNT)
     SNativeHandle appHandle{GetModuleHandleW(nullptr), -1, NATIVE_HANDLE_APP_INSTANCE};
-    if (CreatePlatformManager(g_stdlibDefaultAllocator, &appHandle, m_platform.ReleaseAndGetAddressOf()) != PLATFORM_ERR_OK)
+    if (CreatePlatformManager(Stdlib::g_stdlibDefaultAllocator, &appHandle, m_platform.ReleaseAndGetAddressOf()) != PLATFORM_ERR_OK)
         return false;
 
     m_windowCallback.manager = m_platform.Get();

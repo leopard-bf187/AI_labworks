@@ -19,4 +19,4 @@ include("${CMAKE_SOURCE_DIR}/cmake/engine_target_layout.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/engine_project_defines.cmake")
 
 # The engine itself is prebuilt; only the laboratory application is compiled.
-add_subdirectory(src_lab4)
+add_subdirectory("${CMAKE_SOURCE_DIR}/src_lab4/src")
