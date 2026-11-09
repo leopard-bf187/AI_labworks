@@ -1,5 +1,10 @@
 @echo off
+setlocal
+cd /d "%~dp0" || exit /b 1
 
-cmake --preset vs2019_win64
-cmake --build --preset build_vs2019_win64_debug
-cmake --install __projects\vs2019_win64 --config Debug
+rem Configure, build and install the standalone AI_Lab4 application (win64 Debug).
+cmake --preset vs2019_win64 || exit /b 1
+cmake --build --preset build_vs2019_win64_debug --target AI_Lab4 || exit /b 1
+cmake --install "__projects\vs2019_win64" --config Debug || exit /b 1
+
+exit /b 0
