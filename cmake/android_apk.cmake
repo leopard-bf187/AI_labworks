@@ -1,0 +1,240 @@
+set(KRYSTALLIC_ANDROID_APK_PROJECTS_DIR "${CMAKE_SOURCE_DIR}/__projects/android_apk")
+set(KRYSTALLIC_ANDROID_APK_BUILD_DATA_DIR "${SRC_BUILD_DATA_DIR}/AndroidAPK")
+set(KRYSTALLIC_ANDROID_APK_DEFAULT_TEMPLATE_DIR "${CMAKE_SOURCE_DIR}/cmake/gradle")
+
+set(KRYSTALLIC_ANDROID_APK_AGP_VERSION "8.9.2" CACHE STRING "Android Gradle Plugin version used by generated APK projects")
+set(KRYSTALLIC_ANDROID_APK_COMPILE_SDK "35" CACHE STRING "Android compile SDK used by generated APK projects")
+set(KRYSTALLIC_ANDROID_APK_MIN_SDK "24" CACHE STRING "Android minimum SDK used by generated APK projects")
+set(KRYSTALLIC_ANDROID_APK_TARGET_SDK "35" CACHE STRING "Android target SDK used by generated APK projects")
+
+function(AddAndroidAPKTarget target)
+    if(NOT KRYSTALLIC_BUILD_SANDBOX_ANDROID_APK)
+        message(FATAL_ERROR "AddAndroidAPKTarget: KRYSTALLIC_BUILD_SANDBOX_ANDROID_APK is disabled")
+    endif()
+
+    if(NOT KRYSTALLIC_OS_DEFINE STREQUAL "KRYSTALLIC_OS_ANDROID")
+        message(FATAL_ERROR "AddAndroidAPKTarget: target '${target}' can only be configured for Android")
+    endif()
+
+    if(NOT TARGET ${target})
+        message(FATAL_ERROR "AddAndroidAPKTarget: target '${target}' does not exist")
+    endif()
+
+    set_target_properties(${target} PROPERTIES FOLDER "Sandbox/APK")
+    SetWarnings(${target})
+    SetCppMode(${target})
+    #SetOutputName(${target} "${target}")
+    SetEngineTargetLayout(${target})
+    SetTargetDependencies(${target} PRIVATE_DEPS android_native_app_glue PRIVATE_3DPARTY android log)
+endfunction()
+
+function(SetAndroidAPKProperties target)
+    if(NOT TARGET ${target})
+        message(FATAL_ERROR "SetAndroidAPKProperties: target '${target}' does not exist")
+    endif()
+
+    set(options)
+    set(oneValueArgs APPLICATION_ID APPLICATION_NAME PROJECT_NAME OUTPUT_NAME TEMPLATE_DIR RESOURCE_DIR ASSET_DIR ICON MIN_SDK TARGET_SDK COMPILE_SDK VERSION_CODE VERSION_NAME AGP_VERSION)
+    set(multiValueArgs)
+    cmake_parse_arguments(APK "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    if(NOT APK_APPLICATION_ID)
+        message(FATAL_ERROR "SetAndroidAPKProperties: APPLICATION_ID is required for target '${target}'")
+    endif()
+
+    if(NOT APK_PROJECT_NAME)
+        string(REGEX REPLACE "_APK$" "" APK_PROJECT_NAME "${target}")
+    endif()
+
+    if(NOT APK_APPLICATION_NAME)
+        set(APK_APPLICATION_NAME "${APK_PROJECT_NAME}")
+    endif()
+
+    if(NOT APK_OUTPUT_NAME)
+        set(APK_OUTPUT_NAME "${APK_PROJECT_NAME}")
+    endif()
+
+    if(NOT APK_TEMPLATE_DIR)
+        set(APK_TEMPLATE_DIR "${KRYSTALLIC_ANDROID_APK_DEFAULT_TEMPLATE_DIR}")
+    endif()
+
+    if(NOT APK_MIN_SDK)
+        set(APK_MIN_SDK "${KRYSTALLIC_ANDROID_APK_MIN_SDK}")
+    endif()
+
+    if(NOT APK_TARGET_SDK)
+        set(APK_TARGET_SDK "${KRYSTALLIC_ANDROID_APK_TARGET_SDK}")
+    endif()
+
+    if(NOT APK_COMPILE_SDK)
+        set(APK_COMPILE_SDK "${KRYSTALLIC_ANDROID_APK_COMPILE_SDK}")
+    endif()
+
+    if(NOT APK_VERSION_CODE)
+        set(APK_VERSION_CODE "${KRYSTALLIC_BUILD_NUMBER}")
+    endif()
+
+    if(NOT APK_VERSION_NAME)
+        message(FATAL_ERROR "SetAndroidAPKProperties: VERSION_NAME is required for target '${target}'")
+    endif()
+
+    if(NOT APK_AGP_VERSION)
+        set(APK_AGP_VERSION "${KRYSTALLIC_ANDROID_APK_AGP_VERSION}")
+    endif()
+
+    if(APK_TEMPLATE_DIR)
+        get_filename_component(APK_TEMPLATE_DIR "${APK_TEMPLATE_DIR}" ABSOLUTE BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+    endif()
+
+    if(APK_RESOURCE_DIR)
+        get_filename_component(APK_RESOURCE_DIR "${APK_RESOURCE_DIR}" ABSOLUTE BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+    endif()
+
+    if(APK_ASSET_DIR)
+        get_filename_component(APK_ASSET_DIR "${APK_ASSET_DIR}" ABSOLUTE BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+    endif()
+
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_APPLICATION_ID "${APK_APPLICATION_ID}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_APPLICATION_NAME "${APK_APPLICATION_NAME}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_PROJECT_NAME "${APK_PROJECT_NAME}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_OUTPUT_NAME "${APK_OUTPUT_NAME}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_TEMPLATE_DIR "${APK_TEMPLATE_DIR}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_RESOURCE_DIR "${APK_RESOURCE_DIR}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_ASSET_DIR "${APK_ASSET_DIR}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_ICON "${APK_ICON}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_MIN_SDK "${APK_MIN_SDK}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_TARGET_SDK "${APK_TARGET_SDK}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_COMPILE_SDK "${APK_COMPILE_SDK}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_VERSION_CODE "${APK_VERSION_CODE}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_VERSION_NAME "${APK_VERSION_NAME}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_AGP_VERSION "${APK_AGP_VERSION}")
+endfunction()
+
+function(_KrystallicCollectAndroidAPKRuntimeTargets target outTargets)
+    set(pendingTargets ${target})
+    set(visitedTargets)
+    set(runtimeTargets)
+
+    while(pendingTargets)
+        list(GET pendingTargets 0 currentTarget)
+        list(REMOVE_AT pendingTargets 0)
+
+        if(currentTarget IN_LIST visitedTargets)
+            continue()
+        endif()
+
+        if(NOT TARGET ${currentTarget})
+            continue()
+        endif()
+
+        list(APPEND visitedTargets ${currentTarget})
+
+        get_target_property(currentTargetType ${currentTarget} TYPE)
+        if(currentTargetType STREQUAL "SHARED_LIBRARY" OR currentTargetType STREQUAL "MODULE_LIBRARY")
+            list(APPEND runtimeTargets ${currentTarget})
+        endif()
+
+        get_target_property(currentTargetDeps ${currentTarget} KRYSTALLIC_TARGET_DEPENDENCIES)
+        if(currentTargetDeps AND NOT currentTargetDeps STREQUAL "currentTargetDeps-NOTFOUND")
+            list(APPEND pendingTargets ${currentTargetDeps})
+        endif()
+    endwhile()
+
+    list(REMOVE_DUPLICATES runtimeTargets)
+    set(${outTargets} "${runtimeTargets}" PARENT_SCOPE)
+endfunction()
+
+function(_KrystallicGetAndroidAPKRuntimeEntries target outEntries)
+    _KrystallicCollectAndroidAPKRuntimeTargets(${target} runtimeTargets)
+    set(runtimeEntries)
+
+    foreach(runtimeTarget ${runtimeTargets})
+        get_target_property(runtimeOutputName ${runtimeTarget} OUTPUT_NAME)
+        if(NOT runtimeOutputName OR runtimeOutputName STREQUAL "runtimeOutputName-NOTFOUND")
+            set(runtimeOutputName "${runtimeTarget}")
+        endif()
+        list(APPEND runtimeEntries "${runtimeTarget}|${runtimeOutputName}")
+    endforeach()
+
+    set(${outEntries} "${runtimeEntries}" PARENT_SCOPE)
+endfunction()
+
+function(ConfigureAndroidAPKProject target)
+    if(NOT TARGET ${target})
+        message(FATAL_ERROR "ConfigureAndroidAPKProject: target '${target}' does not exist")
+    endif()
+
+    get_target_property(ANDROID_APK_APPLICATION_ID ${target} KRYSTALLIC_ANDROID_APK_APPLICATION_ID)
+    get_target_property(ANDROID_APK_APPLICATION_NAME ${target} KRYSTALLIC_ANDROID_APK_APPLICATION_NAME)
+    get_target_property(ANDROID_APK_PROJECT_NAME ${target} KRYSTALLIC_ANDROID_APK_PROJECT_NAME)
+    get_target_property(ANDROID_APK_OUTPUT_NAME ${target} KRYSTALLIC_ANDROID_APK_OUTPUT_NAME)
+    get_target_property(ANDROID_APK_TEMPLATE_DIR ${target} KRYSTALLIC_ANDROID_APK_TEMPLATE_DIR)
+    get_target_property(ANDROID_APK_RESOURCE_DIR ${target} KRYSTALLIC_ANDROID_APK_RESOURCE_DIR)
+    get_target_property(ANDROID_APK_ASSET_DIR ${target} KRYSTALLIC_ANDROID_APK_ASSET_DIR)
+    get_target_property(ANDROID_APK_ICON ${target} KRYSTALLIC_ANDROID_APK_ICON)
+    get_target_property(ANDROID_APK_MIN_SDK ${target} KRYSTALLIC_ANDROID_APK_MIN_SDK)
+    get_target_property(ANDROID_APK_TARGET_SDK ${target} KRYSTALLIC_ANDROID_APK_TARGET_SDK)
+    get_target_property(ANDROID_APK_COMPILE_SDK ${target} KRYSTALLIC_ANDROID_APK_COMPILE_SDK)
+    get_target_property(ANDROID_APK_VERSION_CODE ${target} KRYSTALLIC_ANDROID_APK_VERSION_CODE)
+    get_target_property(ANDROID_APK_VERSION_NAME ${target} KRYSTALLIC_ANDROID_APK_VERSION_NAME)
+    get_target_property(ANDROID_APK_AGP_VERSION ${target} KRYSTALLIC_ANDROID_APK_AGP_VERSION)
+
+    if(NOT ANDROID_APK_APPLICATION_ID OR ANDROID_APK_APPLICATION_ID STREQUAL "ANDROID_APK_APPLICATION_ID-NOTFOUND")
+        message(FATAL_ERROR "ConfigureAndroidAPKProject: SetAndroidAPKProperties must be called for target '${target}' first")
+    endif()
+
+    if(NOT EXISTS "${ANDROID_APK_TEMPLATE_DIR}")
+        message(FATAL_ERROR "ConfigureAndroidAPKProject: template directory '${ANDROID_APK_TEMPLATE_DIR}' does not exist")
+    endif()
+
+    get_target_property(ANDROID_APK_NATIVE_LIBRARY_NAME ${target} OUTPUT_NAME)
+    if(NOT ANDROID_APK_NATIVE_LIBRARY_NAME OR ANDROID_APK_NATIVE_LIBRARY_NAME STREQUAL "ANDROID_APK_NATIVE_LIBRARY_NAME-NOTFOUND")
+        set(ANDROID_APK_NATIVE_LIBRARY_NAME "${target}")
+    endif()
+
+    set(ANDROID_APK_PROJECT_DIR "${KRYSTALLIC_ANDROID_APK_PROJECTS_DIR}/${ANDROID_APK_PROJECT_NAME}")
+    set(ANDROID_APK_GRADLE_BUILD_DIR "${KRYSTALLIC_ANDROID_APK_BUILD_DATA_DIR}/${ANDROID_APK_PROJECT_NAME}/gradle")
+    set(ANDROID_APK_JNI_LIBS_DIR "${KRYSTALLIC_ANDROID_APK_BUILD_DATA_DIR}/${ANDROID_APK_PROJECT_NAME}/jniLibs")
+
+    if(ANDROID_APK_ICON AND NOT ANDROID_APK_ICON STREQUAL "ANDROID_APK_ICON-NOTFOUND")
+        set(ANDROID_APK_ICON_ATTRIBUTE "android:icon=\"${ANDROID_APK_ICON}\"")
+    else()
+        set(ANDROID_APK_ICON_ATTRIBUTE "")
+    endif()
+
+    file(MAKE_DIRECTORY "${ANDROID_APK_PROJECT_DIR}/app/src/main")
+    configure_file("${ANDROID_APK_TEMPLATE_DIR}/settings.gradle.in" "${ANDROID_APK_PROJECT_DIR}/settings.gradle" @ONLY)
+    configure_file("${ANDROID_APK_TEMPLATE_DIR}/build.gradle.in" "${ANDROID_APK_PROJECT_DIR}/build.gradle" @ONLY)
+    configure_file("${ANDROID_APK_TEMPLATE_DIR}/gradle.properties.in" "${ANDROID_APK_PROJECT_DIR}/gradle.properties" @ONLY)
+    configure_file("${ANDROID_APK_TEMPLATE_DIR}/app/build.gradle.in" "${ANDROID_APK_PROJECT_DIR}/app/build.gradle" @ONLY)
+    configure_file("${ANDROID_APK_TEMPLATE_DIR}/app/src/main/AndroidManifest.xml.in" "${ANDROID_APK_PROJECT_DIR}/app/src/main/AndroidManifest.xml" @ONLY)
+
+    if(ANDROID_APK_RESOURCE_DIR AND NOT ANDROID_APK_RESOURCE_DIR STREQUAL "ANDROID_APK_RESOURCE_DIR-NOTFOUND")
+        if(NOT EXISTS "${ANDROID_APK_RESOURCE_DIR}")
+            message(FATAL_ERROR "ConfigureAndroidAPKProject: resource directory '${ANDROID_APK_RESOURCE_DIR}' does not exist")
+        endif()
+        file(REMOVE_RECURSE "${ANDROID_APK_PROJECT_DIR}/app/src/main/res")
+        file(MAKE_DIRECTORY "${ANDROID_APK_PROJECT_DIR}/app/src/main/res")
+        file(COPY "${ANDROID_APK_RESOURCE_DIR}/" DESTINATION "${ANDROID_APK_PROJECT_DIR}/app/src/main/res")
+    endif()
+
+    if(ANDROID_APK_ASSET_DIR AND NOT ANDROID_APK_ASSET_DIR STREQUAL "ANDROID_APK_ASSET_DIR-NOTFOUND")
+        if(NOT EXISTS "${ANDROID_APK_ASSET_DIR}")
+            message(FATAL_ERROR "ConfigureAndroidAPKProject: asset directory '${ANDROID_APK_ASSET_DIR}' does not exist")
+        endif()
+        file(REMOVE_RECURSE "${ANDROID_APK_PROJECT_DIR}/app/src/main/assets")
+        file(MAKE_DIRECTORY "${ANDROID_APK_PROJECT_DIR}/app/src/main/assets")
+        file(COPY "${ANDROID_APK_ASSET_DIR}/" DESTINATION "${ANDROID_APK_PROJECT_DIR}/app/src/main/assets")
+    endif()
+
+    _KrystallicGetAndroidAPKRuntimeEntries(${target} ANDROID_APK_RUNTIME_ENTRIES)
+
+    set(ANDROID_APK_OUTPUT_VERSION "${SRC_ENG_VER_V1}")
+    file(WRITE "${ANDROID_APK_PROJECT_DIR}/krystallic_apk_config.cmake" "set(KRYSTALLIC_ANDROID_APK_NATIVE_TARGET \"${target}\")\nset(KRYSTALLIC_ANDROID_APK_NATIVE_LIBRARY_NAME \"${ANDROID_APK_NATIVE_LIBRARY_NAME}\")\nset(KRYSTALLIC_ANDROID_APK_RUNTIME_ENTRIES \"${ANDROID_APK_RUNTIME_ENTRIES}\")\nset(KRYSTALLIC_ANDROID_APK_OUTPUT_VERSION \"${ANDROID_APK_OUTPUT_VERSION}\")\nset(KRYSTALLIC_ANDROID_APK_OUTPUT_NAME \"${ANDROID_APK_OUTPUT_NAME}\")\nset(KRYSTALLIC_ANDROID_APK_APPLICATION_VERSION \"${ANDROID_APK_VERSION_NAME}\")\n")
+
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_PROJECT_DIR "${ANDROID_APK_PROJECT_DIR}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_GRADLE_BUILD_DIR "${ANDROID_APK_GRADLE_BUILD_DIR}")
+    set_property(TARGET ${target} PROPERTY KRYSTALLIC_ANDROID_APK_JNI_LIBS_DIR "${ANDROID_APK_JNI_LIBS_DIR}")
+
+    message(STATUS "Android APK project '${ANDROID_APK_PROJECT_NAME}' -> ${ANDROID_APK_PROJECT_DIR}")
+endfunction()

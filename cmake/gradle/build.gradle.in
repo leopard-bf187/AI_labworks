@@ -1,0 +1,9 @@
+plugins {
+    id 'com.android.application' version '@ANDROID_APK_AGP_VERSION@' apply false
+}
+
+layout.buildDirectory.set(file('@ANDROID_APK_GRADLE_BUILD_DIR@'))
+
+subprojects {
+    layout.buildDirectory.set(rootProject.layout.buildDirectory.dir(name))
+}
