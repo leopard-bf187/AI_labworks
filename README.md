@@ -17,13 +17,11 @@
 
 | Элемент | Использованное средство |
 |---|---|
-| Язык программирования | C++20 |
-| Сборка | CMake, Visual Studio (MSVC) |
-| Окно, клавиатура, мышь, GUI | Krystallic Engine — Platform API, GUI API |
-| Вывод кадров | Krystallic Engine RHI, OpenGL 4.6 |
+| Язык программирования | C++ |
+| Сборка | CMake, Visual Studio 2019 (MSVC16) |
+| Движок | Krystallic Engine |
 | Математическая модель | Собственная реализация алгоритма Мамдани на C++ |
-| Ресурсы | SBoxData, шрифты Roboto |
-| Проверенная конфигурация | Windows, Win32 Debug |
+| Платформа | Windows |
 
 Программа является **отдельным приложением**, а не подсистемой Krystallic Engine. Библиотеки движка предоставляют исключительно платформенную и графическую инфраструктуру.
 
@@ -235,7 +233,7 @@ build_engine_msvc16_win32d.bat
 __build_engine_msvc16.bat
 ~~~
 
-Предусмотрены Win32, Win64, WinArm64 в конфигурациях Debug, Checked и Release. CMake использует готовые библиотеки Krystallic из папки **build/**, выходные каталоги **__build/** и каталог установки **__install/**. Ресурсы из **src_lab4/SBoxData/** копируются к приложению вместе с DLL.
+Предусмотрены Win32, Win64, WinArm64 в конфигурациях Debug, Checked и Release. CMake использует готовые библиотеки движка Krystallic из папки **build/**, выходные каталоги **__build/** и каталог установки **__install/**. Ресурсы из **src_lab4/SBoxData/** копируются к приложению вместе с DLL.
 
 ## 11. Вывод
 
